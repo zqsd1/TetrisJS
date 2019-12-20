@@ -1,10 +1,12 @@
 class Cube {
-    constructor(width, height, x, y, couleur) {
+    constructor(width, height, x, y, couleur, isActive = false) {
         this.width = width;
         this.height = height;
         this.x = x;
         this.y = y;
         this.couleur = couleur;
+        this.isActive = isActive;
+
     }
 }
 
@@ -45,6 +47,7 @@ function dessiner(params) {
 }
 
 
+//tableau qui represente tout les cases du jeux
 var tableauCubes = new Array(nbCubeX * nbCubeY);
 
 //remplissage du tableau par des cubes noir
@@ -60,8 +63,10 @@ for (let y = 0; y < nbCubeY; y++) {
     }
 
 }
-var tmp = createPiece();
-tableauCubes[4] = tmp;
+
+//test faire tomber piece
+createPiece();
+
 
 dessiner();
 
@@ -90,7 +95,9 @@ function demarrer(params) {
     if (!isPlay) {
         isPlay = !isPlay;
 
+        //createPiece();
         window.setInterval(deplacement, tempo, "bas")
+
 
     }
 
@@ -98,37 +105,48 @@ function demarrer(params) {
 
 /**
  * 
- * @param {*} params 
+ * @param {string} params 
  * la fonction qui fait bouger la piece
  */
 function deplacement(params) {
 
 
     if (params == "gauche") {
-       
+
         for (let i = 0; i < tableauCubes.length; i++) {
-            
-            if (tableauCubes[i].couleur != "black") {
-               
-                //pour si c'est un bord
+
+            var tmp = tableauCubes[i];
+            if (tmp.isActive) {
+
+                //pour si c'est un bord on decale pas
                 if (Math.floor(i / nbCubeX) == Math.floor((i - 1) / nbCubeX)) {
-                    tableauCubes[i - 1].couleur = tableauCubes[i].couleur
-                    tableauCubes[i].couleur = "black";
-                    console.log("1");
+
+                    tableauCubes[i - 1].isActive = true;
+                    tableauCubes[i - 1].couleur = tmp.couleur;
+                    tmp.isActive = false;
+                    tmp.couleur = "black";
+                    tableauCubes[i] = tmp;
+
                 }
+                break;
             }
-            break;
+
         }
 
     }
     if (params == "droite") {
-        
+
         for (let i = 0; i < tableauCubes.length; i++) {
-            if (tableauCubes[i].couleur != "black") {
+            if (tableauCubes[i].isActive) {
                 if (Math.floor(i / nbCubeX) == Math.floor((i + 1) / nbCubeX)) {
-                    tableauCubes[i + 1].couleur = tableauCubes[i].couleur
+
+
+                    tableauCubes[i + 1].isActive = true;
+                    tableauCubes[i + 1].couleur = tableauCubes[i].couleur;
+
+                    tableauCubes[i].isActive = false;
                     tableauCubes[i].couleur = "black";
-                    
+
                 }
                 break;
             }
@@ -139,12 +157,24 @@ function deplacement(params) {
 
 
         for (let i = 0; i < tableauCubes.length; i++) {
-            if (tableauCubes[i].couleur != "black") {
-
+            if (tableauCubes[i].isActive) {
+                //verifie si on est pas en bas
                 if (i + nbCubeX < tableauCubes.length) {
 
+                    tableauCubes[i + nbCubeX].isActive = true;
                     tableauCubes[i + nbCubeX].couleur = tableauCubes[i].couleur
+
+                    tableauCubes[i].isActive = false
                     tableauCubes[i].couleur = "black";
+                }
+                //en bas
+                else {
+                    tableauCubes[i].isActive = false;
+
+                    //creer nouvelle piece 
+                    createPiece();
+
+
                 }
                 break;
             }
@@ -155,7 +185,11 @@ function deplacement(params) {
 
 }
 
+
+
 function createPiece(params) {
-    var cubeTest = new Cube(cubeWidth, cubeHeight, 5, 0, "red");
-    return cubeTest;
+    var cubeTest = new Cube(cubeWidth, cubeHeight, 4, 0, "red");
+    cubeTest.isActive = true;
+    tableauCubes[4] = cubeTest;
+    //return cubeTest;
 }
