@@ -88,7 +88,7 @@ function inputUser(params) {
 var btnStart = document.getElementById("btnStart");
 btnStart.onclick = demarrer;
 var isPlay = false;
-var tempo = 1000;
+var tempo = 500;
 function demarrer(params) {
 
     //pour eviter de lancer plusieur fois
@@ -120,13 +120,15 @@ function deplacement(params) {
 
                 //pour si c'est un bord on decale pas
                 if (Math.floor(i / nbCubeX) == Math.floor((i - 1) / nbCubeX)) {
+                    //si la case a coté ne contient pas d'autre piece
+                    if (tableauCubes[i - 1].couleur == "black") {
 
-                    tableauCubes[i - 1].isActive = true;
-                    tableauCubes[i - 1].couleur = tmp.couleur;
-                    tmp.isActive = false;
-                    tmp.couleur = "black";
-                    tableauCubes[i] = tmp;
-
+                        tableauCubes[i - 1].isActive = true;
+                        tableauCubes[i - 1].couleur = tmp.couleur;
+                        tmp.isActive = false;
+                        tmp.couleur = "black";
+                        tableauCubes[i] = tmp;
+                    }
                 }
                 break;
             }
@@ -140,13 +142,15 @@ function deplacement(params) {
             if (tableauCubes[i].isActive) {
                 if (Math.floor(i / nbCubeX) == Math.floor((i + 1) / nbCubeX)) {
 
+                    //si la case a coté ne contient pas d'autre piece
+                    if (tableauCubes[i + 1].couleur == "black") {
 
-                    tableauCubes[i + 1].isActive = true;
-                    tableauCubes[i + 1].couleur = tableauCubes[i].couleur;
+                        tableauCubes[i + 1].isActive = true;
+                        tableauCubes[i + 1].couleur = tableauCubes[i].couleur;
 
-                    tableauCubes[i].isActive = false;
-                    tableauCubes[i].couleur = "black";
-
+                        tableauCubes[i].isActive = false;
+                        tableauCubes[i].couleur = "black";
+                    }
                 }
                 break;
             }
@@ -158,14 +162,24 @@ function deplacement(params) {
 
         for (let i = 0; i < tableauCubes.length; i++) {
             if (tableauCubes[i].isActive) {
-                //verifie si on est pas en bas
+                //verifie si on peut descendre
                 if (i + nbCubeX < tableauCubes.length) {
 
-                    tableauCubes[i + nbCubeX].isActive = true;
-                    tableauCubes[i + nbCubeX].couleur = tableauCubes[i].couleur
+                    //place en dessou contient une autre piece
+                    if (tableauCubes[i + nbCubeX].couleur != "black") {
+                        tableauCubes[i].isActive = false;
 
-                    tableauCubes[i].isActive = false
-                    tableauCubes[i].couleur = "black";
+                        //creer nouvelle piece 
+                        createPiece();
+                    }
+                    else {
+                        tableauCubes[i + nbCubeX].isActive = true;
+                        tableauCubes[i + nbCubeX].couleur = tableauCubes[i].couleur
+
+                        tableauCubes[i].isActive = false
+                        tableauCubes[i].couleur = "black";
+                    }
+
                 }
                 //en bas
                 else {
