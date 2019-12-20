@@ -1,9 +1,9 @@
-class Cube{
-    constructor(width,height,x,y,couleur) {
+class Cube {
+    constructor(width, height, x, y, couleur) {
         this.width = width;
         this.height = height;
         this.x = x;
-        this.y =y;
+        this.y = y;
         this.couleur = couleur;
     }
 }
@@ -27,38 +27,55 @@ var cubeWidth = canvasTetris.getAttribute("width") / nbCubeX;
  * la fonction qui fait le dessin dans le canvas
  */
 function dessiner(params) {
-    if (canvasTetris.getContext){
-    var dessinateur = canvasTetris.getContext("2d");
+    if (canvasTetris.getContext) {
+        var dessinateur = canvasTetris.getContext("2d");
 
-    tableauCubes.forEach(cube => {
-   
-        dessinateur.fillStyle = cube.couleur;
-        dessinateur.fillRect(cube.x*cubeWidth,cube.y*cubeHeight,cube.width,cube.height);
-            console.log("hello");
-        
-    });
+        tableauCubes.forEach(cube => {
+
+            try {
+                dessinateur.fillStyle = cube.couleur;
+                dessinateur.fillRect(cube.x * cubeWidth, cube.y * cubeHeight, cube.width, cube.height);
+
+            } catch (error) {
+
+            }
+
+        });
     }
 }
 
 
-var tableauCubes = new Array(nbCubeX*nbCubeY);
+var tableauCubes = new Array(nbCubeX * nbCubeY);
 
+//remplissage du tableau par des cubes noir
+var index = 0;
+//position y
+for (let y = 0; y < nbCubeY; y++) {
+
+    //position x
+    for (let x = 0; x < nbCubeX; x++) {
+
+        tableauCubes[index] = new Cube(cubeWidth, cubeHeight, x, y, "black");
+        index++;
+    }
+
+}
 var tmp = createPiece();
 tableauCubes[4] = tmp;
 
-console.log(tableauCubes);
 dessiner();
 
 //pour agir sur les action utilisateur
-document.onKeyDown = inputUser;
+document.onkeydown = inputUser;
 function inputUser(params) {
+
     if (params.key == "ArrowLeft") {
-     
-        deplacement(/**x-1 */);
+
+        deplacement("gauche");
     }
-    
+
     if (params.key == "ArrowRight") {
-        deplacement(/**x+1 */);
+        deplacement("droite");
     }
 }
 
@@ -67,12 +84,13 @@ var btnStart = document.getElementById("btnStart");
 btnStart.onclick = demarrer;
 var isPlay = false;
 var tempo = 1000;
-function demarrer(params) {    
+function demarrer(params) {
 
     //pour eviter de lancer plusieur fois
     if (!isPlay) {
         isPlay = !isPlay;
-        window.setInterval(deplacement,tempo/*,arg +1Y */)
+
+        window.setInterval(deplacement, tempo, "bas")
 
     }
 
@@ -84,10 +102,60 @@ function demarrer(params) {
  * la fonction qui fait bouger la piece
  */
 function deplacement(params) {
-    
+
+
+    if (params == "gauche") {
+       
+        for (let i = 0; i < tableauCubes.length; i++) {
+            
+            if (tableauCubes[i].couleur != "black") {
+               
+                //pour si c'est un bord
+                if (Math.floor(i / nbCubeX) == Math.floor((i - 1) / nbCubeX)) {
+                    tableauCubes[i - 1].couleur = tableauCubes[i].couleur
+                    tableauCubes[i].couleur = "black";
+                    console.log("1");
+                }
+            }
+            break;
+        }
+
+    }
+    if (params == "droite") {
+        
+        for (let i = 0; i < tableauCubes.length; i++) {
+            if (tableauCubes[i].couleur != "black") {
+                if (Math.floor(i / nbCubeX) == Math.floor((i + 1) / nbCubeX)) {
+                    tableauCubes[i + 1].couleur = tableauCubes[i].couleur
+                    tableauCubes[i].couleur = "black";
+                    
+                }
+                break;
+            }
+
+        }
+    }
+    if (params == "bas") {
+
+
+        for (let i = 0; i < tableauCubes.length; i++) {
+            if (tableauCubes[i].couleur != "black") {
+
+                if (i + nbCubeX < tableauCubes.length) {
+
+                    tableauCubes[i + nbCubeX].couleur = tableauCubes[i].couleur
+                    tableauCubes[i].couleur = "black";
+                }
+                break;
+            }
+
+        }
+    }
+    dessiner();
+
 }
 
 function createPiece(params) {
-    var cubeTest = new Cube(cubeWidth,cubeHeight,5,0,"red");
+    var cubeTest = new Cube(cubeWidth, cubeHeight, 5, 0, "red");
     return cubeTest;
 }
