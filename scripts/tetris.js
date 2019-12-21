@@ -16,8 +16,8 @@ var nbCubeX = 10;
 var nbCubeY = 20;
 
 var canvasTetris = document.getElementById("canvasTetris");
-var canvasTetrisHeight = canvasTetris.getAttribute("height");
-var canvasTetrisWidth = canvasTetris.getAttribute("width");
+//var canvasTetrisHeight = canvasTetris.getAttribute("height");
+//var canvasTetrisWidth = canvasTetris.getAttribute("width");
 
 var cubeHeight = canvasTetris.getAttribute("height") / nbCubeY;
 var cubeWidth = canvasTetris.getAttribute("width") / nbCubeX;
@@ -32,6 +32,9 @@ function dessiner(params) {
     if (canvasTetris.getContext) {
         var dessinateur = canvasTetris.getContext("2d");
 
+        //efface le canvas
+        dessinateur.clearRect(0, 0, canvasTetris.getAttribute("width"), canvasTetris.getAttribute("height"))
+
         tableauCubes.forEach(cube => {
 
             try {
@@ -39,7 +42,7 @@ function dessiner(params) {
                 dessinateur.fillRect(cube.x * cubeWidth, cube.y * cubeHeight, cube.width, cube.height);
 
             } catch (error) {
-
+                console.log(error);
             }
 
         });
@@ -48,21 +51,8 @@ function dessiner(params) {
 
 
 //tableau qui represente tout les cases du jeux
-var tableauCubes = new Array(nbCubeX * nbCubeY);
+var tableauCubes = [];
 
-//remplissage du tableau par des cubes noir
-var index = 0;
-//position y
-for (let y = 0; y < nbCubeY; y++) {
-
-    //position x
-    for (let x = 0; x < nbCubeX; x++) {
-
-        tableauCubes[index] = new Cube(cubeWidth, cubeHeight, x, y, "black");
-        index++;
-    }
-
-}
 
 //test faire tomber piece
 createPiece();
@@ -112,91 +102,114 @@ function deplacement(params) {
 
 
     if (params == "gauche") {
-
         for (let i = 0; i < tableauCubes.length; i++) {
+            //trouve la piece que l'on deplace
+            if (tableauCubes[i].isActive) {
 
-            var tmp = tableauCubes[i];
-            if (tmp.isActive) {
 
-                //pour si c'est un bord on decale pas
-                if (Math.floor(i / nbCubeX) == Math.floor((i - 1) / nbCubeX)) {
-                    //si la case a coté ne contient pas d'autre piece
-                    if (tableauCubes[i - 1].couleur == "black") {
+                //verifie si on peut faire le deplacement
+                //bord du plateau ?
+                if (tableauCubes[i].x > 0) {
 
-                        tableauCubes[i - 1].isActive = true;
-                        tableauCubes[i - 1].couleur = tmp.couleur;
-                        tmp.isActive = false;
-                        tmp.couleur = "black";
-                        tableauCubes[i] = tmp;
+                    //cube a coté ?      
+                    var isFree = true;
+                    for (let j = 0; j < tableauCubes.length; j++) {
+                        if (tableauCubes[j].x === tableauCubes[i].x - 1 && tableauCubes[j].y === tableauCubes[i].y) {
+                            isFree = false;
+                            break;
+                        }
                     }
+
+                    //deplacement
+                    if (isFree) {
+                        tableauCubes[i].x = tableauCubes[i].x - 1;
+                        console.log(tableauCubes[i]);
+                    }
+
                 }
+
+                dessiner();
                 break;
+
             }
-
         }
-
     }
+
+
     if (params == "droite") {
 
         for (let i = 0; i < tableauCubes.length; i++) {
+            //trouve la piece que l'on deplace
             if (tableauCubes[i].isActive) {
-                if (Math.floor(i / nbCubeX) == Math.floor((i + 1) / nbCubeX)) {
 
-                    //si la case a coté ne contient pas d'autre piece
-                    if (tableauCubes[i + 1].couleur == "black") {
+                //verifie si on peut faire le deplacement
+                //bord du plateau ?
+                if (tableauCubes[i].x < nbCubeX - 1) {
 
-                        tableauCubes[i + 1].isActive = true;
-                        tableauCubes[i + 1].couleur = tableauCubes[i].couleur;
-
-                        tableauCubes[i].isActive = false;
-                        tableauCubes[i].couleur = "black";
+                    //cube a coté ?      
+                    var isFree = true;
+                    for (let j = 0; j < tableauCubes.length; j++) {
+                        if (tableauCubes[j].x === tableauCubes[i].x + 1 && tableauCubes[j].y === tableauCubes[i].y) {
+                            isFree = false;
+                            break;
+                        }
                     }
-                }
-                break;
-            }
 
+                    //deplacement
+                    if (isFree) {
+                        tableauCubes[i].x = tableauCubes[i].x + 1;
+                    }
+
+                }
+                dessiner();
+                break;
+
+            }
         }
     }
+
+
     if (params == "bas") {
-
-
         for (let i = 0; i < tableauCubes.length; i++) {
+            //trouve la piece que l'on deplace
             if (tableauCubes[i].isActive) {
-                //verifie si on peut descendre
-                if (i + nbCubeX < tableauCubes.length) {
+                //verifie si on peut faire le deplacement
+                //bord du plateau ?
+                var isFree = true;
+                if (tableauCubes[i].y < nbCubeY - 1) {
+                    //cube en dessous ?      
 
-                    //place en dessou contient une autre piece
-                    if (tableauCubes[i + nbCubeX].couleur != "black") {
-                        tableauCubes[i].isActive = false;
-
-                        //creer nouvelle piece 
-                        createPiece();
+                    for (let j = 0; j < tableauCubes.length; j++) {
+                        if (tableauCubes[j].x === tableauCubes[i].x && tableauCubes[j].y === tableauCubes[i].y + 1) {
+                            isFree = false;
+                            break;
+                        }
                     }
-                    else {
-                        tableauCubes[i + nbCubeX].isActive = true;
-                        tableauCubes[i + nbCubeX].couleur = tableauCubes[i].couleur
-
-                        tableauCubes[i].isActive = false
-                        tableauCubes[i].couleur = "black";
-                    }
-
-                }
-                //en bas
-                else {
-                    tableauCubes[i].isActive = false;
-
-                    //creer nouvelle piece 
-                    createPiece();
 
 
                 }
+                else
+                    isFree = false;
+
+                if (isFree) {
+                    tableauCubes[i].y = tableauCubes[i].y + 1;
+                    dessiner();
+                }
+                else{
+                    tableauCubes[i].isActive=false;
+                    verifier();
+                }
+
+
+
+               
                 break;
             }
-
         }
-    }
-    dessiner();
 
+
+
+    }
 }
 
 
@@ -204,6 +217,23 @@ function deplacement(params) {
 function createPiece(params) {
     var cubeTest = new Cube(cubeWidth, cubeHeight, 4, 0, "red");
     cubeTest.isActive = true;
-    tableauCubes[4] = cubeTest;
+    tableauCubes.push(cubeTest);
     //return cubeTest;
+}
+
+function verifier(params) {
+    //TODO verifier si la ligne ou la piece s'arrete est complete si oui effacer 
+    // if (condition) {
+    //     effacerLigne();
+    // }
+
+    createPiece();
+    dessiner();
+}
+
+
+
+
+function effacerLigne(params) {
+
 }
