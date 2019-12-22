@@ -195,14 +195,14 @@ function deplacement(params) {
                     tableauCubes[i].y = tableauCubes[i].y + 1;
                     dessiner();
                 }
-                else{
-                    tableauCubes[i].isActive=false;
-                    verifier();
+                else {
+                    tableauCubes[i].isActive = false;
+                    verifier(tableauCubes[i].y);
                 }
 
 
 
-               
+
                 break;
             }
         }
@@ -221,19 +221,63 @@ function createPiece(params) {
     //return cubeTest;
 }
 
-function verifier(params) {
-    //TODO verifier si la ligne ou la piece s'arrete est complete si oui effacer 
-    // if (condition) {
-    //     effacerLigne();
-    // }
 
+/**
+ * fonction qui verifie si la piece qui s'est arreté a rempli la ligne
+ * @param {number} params 
+ * le numero de la ligne a verifier
+ */
+function verifier(params) {
+
+    var tmp = [];
+    //cherche tout les cube qui sont a la meme ligne que le cube qui vient de s'arreter
+    tableauCubes.forEach(cube => {
+        if (cube.y === params) {
+            tmp.push(cube);
+        }
+    });
+
+    //si toute la ligne est prise
+    if (tmp.length === nbCubeX) {
+        effacerLigne(tmp);
+        replacerCubes(params);
+
+
+    }
     createPiece();
     dessiner();
 }
 
 
+/**
+ * 
+ * @param {Cube} tmp 
+ */
 
+function effacerLigne(tmp) {
 
-function effacerLigne(params) {
+    // RETIRE DU TAB TOUT CEUX STOCKE DANS TMP
+    tmp.forEach(element => {
+        for (let index = 0; index < tableauCubes.length; index++) {
+            if (tableauCubes[index] === element) {
+                tableauCubes.splice(index, 1);
+            }
 
+        }
+    });
+
+}
+
+/**
+ * descendre toute les ligne du haut    appres suppression
+ * @param {number} params 
+ */
+function replacerCubes(params) {
+    
+    for (let index = 0; index < tableauCubes.length; index++) {
+        if (tableauCubes[index].y < params) {
+            tableauCubes[index].y = tableauCubes[index].y + 1;
+        }
+
+    }
 }
