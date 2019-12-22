@@ -12,8 +12,8 @@ class Cube {
 
 
 //param du tetris
-var nbCubeX = 10;
-var nbCubeY = 20;
+var nbCubeX = 5;
+var nbCubeY = 7;
 
 var canvasTetris = document.getElementById("canvasTetris");
 //var canvasTetrisHeight = canvasTetris.getAttribute("height");
@@ -55,10 +55,10 @@ var tableauCubes = [];
 
 
 //test faire tomber piece
-createPiece();
+// createPiece();
 
 
-dessiner();
+// dessiner();
 
 //pour agir sur les action utilisateur
 document.onkeydown = inputUser;
@@ -79,14 +79,16 @@ var btnStart = document.getElementById("btnStart");
 btnStart.onclick = demarrer;
 var isPlay = false;
 var tempo = 500;
+var inter ;
 function demarrer(params) {
 
     //pour eviter de lancer plusieur fois
     if (!isPlay) {
         isPlay = !isPlay;
+        tableauCubes = [];
 
-        //createPiece();
-        window.setInterval(deplacement, tempo, "bas")
+        createPiece();
+         inter = window.setInterval(deplacement, tempo, "bas")
 
 
     }
@@ -216,68 +218,96 @@ function deplacement(params) {
 
 function createPiece(params) {
     var cubeTest = new Cube(cubeWidth, cubeHeight, 4, 0, "red");
-    cubeTest.isActive = true;
-    tableauCubes.push(cubeTest);
-    //return cubeTest;
-}
-
-
-/**
- * fonction qui verifie si la piece qui s'est arreté a rempli la ligne
- * @param {number} params 
- * le numero de la ligne a verifier
- */
-function verifier(params) {
-
-    var tmp = [];
-    //cherche tout les cube qui sont a la meme ligne que le cube qui vient de s'arreter
-    tableauCubes.forEach(cube => {
-        if (cube.y === params) {
-            tmp.push(cube);
+  
+    //verifie si la case est pas deja prise
+    var fin = false;
+    for (let index = 0; index < tableauCubes.length; index++) {
+        if (tableauCubes[index].y === cubeTest.y && tableauCubes[index].x === cubeTest.x) {
+            fin = true;
+            break;
         }
-    });
-
-    //si toute la ligne est prise
-    if (tmp.length === nbCubeX) {
-        effacerLigne(tmp);
-        replacerCubes(params);
-
 
     }
-    createPiece();
-    dessiner();
+    if (fin) {
+        gameOver();
+    }
+    else {
+        cubeTest.isActive = true;
+        tableauCubes.push(cubeTest);
+        //return cubeTest;}
+
+        dessiner();
+    }
 }
 
+    /**
+     * fonction qui verifie si la piece qui s'est arreté a rempli la ligne
+     * @param {number} params 
+     * le numero de la ligne a verifier
+     */
+    function verifier(params) {
 
-/**
- * 
- * @param {Cube} tmp 
- */
+        var tmp = [];
+        //cherche tout les cube qui sont a la meme ligne que le cube qui vient de s'arreter
+        tableauCubes.forEach(cube => {
+            if (cube.y === params) {
+                tmp.push(cube);
+            }
+        });
 
-function effacerLigne(tmp) {
+        //si toute la ligne est prise
+        if (tmp.length === nbCubeX) {
+            effacerLigne(tmp);
+            replacerCubes(params);
 
-    // RETIRE DU TAB TOUT CEUX STOCKE DANS TMP
-    tmp.forEach(element => {
+
+        }
+        createPiece();
+        dessiner();
+    }
+
+
+    /**
+     * 
+     * @param {Cube} tmp 
+     */
+
+    function effacerLigne(tmp) {
+
+        // RETIRE DU TAB TOUT CEUX STOCKE DANS TMP
+        tmp.forEach(element => {
+            for (let index = 0; index < tableauCubes.length; index++) {
+                if (tableauCubes[index] === element) {
+                    tableauCubes.splice(index, 1);
+                }
+
+            }
+        });
+
+    }
+
+    /**
+     * descendre toute les ligne du haut    appres suppression
+     * @param {number} params 
+     */
+    function replacerCubes(params) {
+
         for (let index = 0; index < tableauCubes.length; index++) {
-            if (tableauCubes[index] === element) {
-                tableauCubes.splice(index, 1);
+            if (tableauCubes[index].y < params) {
+                tableauCubes[index].y = tableauCubes[index].y + 1;
             }
 
         }
-    });
+    }
 
-}
-
-/**
- * descendre toute les ligne du haut    appres suppression
- * @param {number} params 
- */
-function replacerCubes(params) {
-    
-    for (let index = 0; index < tableauCubes.length; index++) {
-        if (tableauCubes[index].y < params) {
-            tableauCubes[index].y = tableauCubes[index].y + 1;
-        }
+    /**
+     * fin de partie
+     * pour quand on ne peut pas rajouter la nouvelle piece
+     * @param {*} params 
+     */
+    function gameOver(params) {
+        isPlay = false;
+        clearInterval(inter);
+        alert("game over");
 
     }
-}
