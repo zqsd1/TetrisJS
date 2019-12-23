@@ -1,31 +1,3 @@
-
-// /**
-//  * descendre toute les ligne du haut    appres suppression
-//  * @param {number} params 
-//  */
-// function replacerCubes(params) {
-
-//     for (let index = 0; index < tableauCubes.length; index++) {
-//         if (tableauCubes[index].y < params) {
-//             tableauCubes[index].y = tableauCubes[index].y + 1;
-//         }
-
-//     }
-// }
-
-// /**
-//  * fin de partie
-//  * pour quand on ne peut pas rajouter la nouvelle piece
-//  * @param {*} params 
-//  */
-// function gameOver(params) {
-//     isPlay = false;
-//     clearInterval(inter);
-//     alert("game over");
-
-// }
-
-
 class Tetris {
 
     /**
@@ -45,7 +17,8 @@ class Tetris {
 
         this.isPlay = false;
         //FIXME event pour quand on modif le tetris pour prevenir qu'il faut redessiner
-        this.onModif = new Event("modif")
+        this.onModif = new Event("modif");
+        this.onFin = new Event("fin");
     }
 
 
@@ -54,12 +27,12 @@ class Tetris {
      * @param {string} params 
      */
     deplacerPiece(params) {
-       
+
 
         var isFree = true;
-
+        //FIXME nouveau systeme
         //recup la piece active vu que c'est toujours la derniere du tableau
-        var pieceActive = this.listeCubes.slice(this.listeCubes.length - 1);
+        // var pieceActive = this.listeCubes.slice(this.listeCubes.length - 1);
         /*
           if (params === "ArrowLeft") {
               var compare ="x>0";
@@ -98,7 +71,7 @@ class Tetris {
   
   }*/
 
-var cubeactiv = false;
+        var cubeactiv = false;
 
         for (let index = 0; index < this.listeCubes.length; index++) {
             if (this.listeCubes[index].isActive) {
@@ -215,10 +188,12 @@ var cubeactiv = false;
             }
         });
 
+
         if (tmp.length === this.nbCubeX) {
             //ligne complete 
             // supprimer ligne
             this.effacerLignes(tmp);
+            this.descendreLignes(tmp[0].y);
         }
         else {
             //ligne imcomplete rien a faire
@@ -233,16 +208,38 @@ var cubeactiv = false;
      */
     effacerLignes(params) {
 
+
+        //efface les pieces donné
         params.forEach(element => {
             for (let index = 0; index < this.listeCubes.length; index++) {
-                if (this.listeCubes[index] === element) {
+                if (this.listeCubes[index] == element) {
                     this.listeCubes.splice(index, 1);
                 }
             }
         });
-        //TODO descendre piece
+
     }
 
+    /**
+     * descend tout les cube au dessus de la ligne supprimé
+     * @param {number} params le numero de la ligne suprrimé
+     */
+    descendreLignes(params) {
+
+     
+        for (let index = 0; index < this.listeCubes.length; index++) {
+            if (this.listeCubes[index].y < params) {
+                this.listeCubes[index].y = this.listeCubes[index].y + 1;
+            }
+
+        }
+    }
+
+    /**
+     * creer une nouvelle piece dans la zone de depart
+     * si place deja prise fini la partie
+     * @param {*} params 
+     */
     creerPiece(params) {
         var fin = false;
         var cube = new Cube(this.largeurCube, this.hauteurCube,/*Math.floor( this.nbCubeX/2)*/4, 0, "red", true);
@@ -267,6 +264,8 @@ var cubeactiv = false;
      * @param {*} params 
      */
     debuterPartie(params) {
+
+        this.listeCubes = [];
         //FIXME
 
         //var tempo = window.setInterval(deplacerPiece, params, "bas");
@@ -277,10 +276,8 @@ var cubeactiv = false;
     finirPartie() {
 
         this.isPlay = false;
+        document.dispatchEvent(this.onFin);
 
     }
-
-
-
 
 }
