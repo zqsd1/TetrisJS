@@ -1,3 +1,26 @@
+requirejs.config({
+    //By default load any module IDs from js/lib
+    baseUrl: 'scripts',
+    //except, if the module ID starts with "app",
+    //load it from the js/app directory. paths
+    //config is relative to the baseUrl, and
+    //never includes a ".js" extension since
+    //the paths config could be for a directory.
+    paths: {
+        app: '../main'
+    }
+});
+
+
+// Start the main app logic.
+requirejs(['cubeClass', 'tetris'],
+function   (cubeClass,tetris) {
+
+
+
+
+
+
 var xxx = 5;
 var yyy = 8;
 var canvasTetris = document.getElementById("canvasTetris");
@@ -91,3 +114,4 @@ function dessiner(params) {
 
 
 
+});
