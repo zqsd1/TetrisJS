@@ -1,12 +1,14 @@
-
-
+var xxx = 5;
+var yyy = 8;
 var canvasTetris = document.getElementById("canvasTetris");
 
-var tetris = new Tetris(10, 20, canvasTetris.getAttribute("width"), canvasTetris.getAttribute("height"));
+var tetris = new Tetris(xxx, yyy, canvasTetris.getAttribute("width"), canvasTetris.getAttribute("height"));
 
 //event creer dans Tetris qui est trigger a chaque fois que le tab est modifié
 //FIXME event
 document.addEventListener("modif",dessiner);
+
+document.addEventListener("fin",gameOver);
 
 
 //pour agir sur les action utilisateur
@@ -18,10 +20,11 @@ btnStart.onclick = demarrer;
 
 //le temps entre chaque chute de piece
 var tempo = 500;
+var interval;
 function demarrer(params) {
     if (!tetris.isPlay) {
         tetris.debuterPartie();
-        var x = window.setInterval(game,tempo);
+        interval = window.setInterval(game,tempo);
         //FIXME window.setInterval(tetris.deplacerPiece, tempo, "bas");
     }
 
@@ -29,6 +32,13 @@ function demarrer(params) {
 }
 function game(params) {
     tetris.deplacerPiece("bas");
+//soit use event soit appel dessiner ici pour actualiser tetris
+}
+
+
+function gameOver(params) {
+    clearInterval(interval);
+    alert("game over");
 }
 
 /**
