@@ -13,7 +13,7 @@ requirejs.config({
 
 
 // Start the main app logic.
-requirejs(['cubeClass', 'tetris'],
+requirejs(['cubeClass','piecesClass', 'tetris'],
 function   (cubeClass,tetris) {
 
 
@@ -21,8 +21,8 @@ function   (cubeClass,tetris) {
 
 
 
-var xxx = 5;
-var yyy = 8;
+var xxx = 6;
+var yyy = 10;
 var canvasTetris = document.getElementById("canvasTetris");
 
 var tetris = new Tetris(xxx, yyy, canvasTetris.getAttribute("width"), canvasTetris.getAttribute("height"));
@@ -82,6 +82,7 @@ function inputUser(params) {
  * la fonction qui fait le dessin dans le canvas
  */
 function dessiner(params) {
+  
     if (canvasTetris.getContext) {
         var dessinateur = canvasTetris.getContext("2d");
 
