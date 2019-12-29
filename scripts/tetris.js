@@ -4,16 +4,13 @@ class Tetris {
      * 
      * @param {number} nbCubeX le nombre de cube sur une ligne
      * @param {number} nbCubeY nombre de cube sur une colonne
-     * @param {number} largeurJeux la largeur du canvas
-     * @param {number} HauteurJeux la hauteur du canvas
+
      */
-    constructor(nbCubeX, nbCubeY, largeurJeux, HauteurJeux) {
+    constructor(nbCubeX, nbCubeY) {
         this.nbCubeX = nbCubeX;
         this.nbCubeY = nbCubeY;
-        this.largeurCube = largeurJeux / nbCubeX;
-        this.hauteurCube = HauteurJeux / nbCubeY;
 
-        this.listeCubes = [];
+        this.listeCubes = [];//tableau qui contient tout les cube de la zone de jeu
 
         this.isPlay = false;
         //FIXME event pour quand on modif le tetris pour prevenir qu'il faut redessiner
@@ -26,7 +23,7 @@ class Tetris {
 
     /**
      * 
-     * @param {string} params 
+     * @param {string} params la direction 
      */
     deplacerPiece(params) {
         try {
@@ -35,7 +32,7 @@ class Tetris {
 
             if (this.listeCubes.length >= 4) {
 
-                 // pour 4 cube
+                // pour 4 cube
 
                 //recup la piece active
                 // c'est les memes cube que dans listeCubes == les modifier modifie ceux dans listeCubes
@@ -152,9 +149,17 @@ class Tetris {
 
                         //enleve les ligne complete
                         for (let index = 0; index < lignesCheck.length; index++) {
+
                             this.effacerLigne(lignesCheck[index]);
+
+                        };
+                        //descend les ligne au dessus des ligne supprimé
+                        for (let index = 0; index < lignesCheck.length; index++) {
+
+
                             this.descendreLigne(lignesCheck[index]);
                         };
+
 
                         this.creerPiece();
 
@@ -228,7 +233,7 @@ class Tetris {
      * descend tout les cube au dessus de la ligne supprimé
      * @param {number} params le numero de la ligne supprimé
      */
-    descendreLignes(params) {
+    descendreLigne(params) {
 
 
         for (let index = 0; index < this.listeCubes.length; index++) {
@@ -248,7 +253,7 @@ class Tetris {
         var fin = false;
 
 
-        var piece = new PieceCarre(Math.floor((this.nbCubeX - 1) / 2), 0, this.largeurCube, this.hauteurCube);
+        var piece = new PieceS(Math.floor((this.nbCubeX - 1) / 2), 0);
 
         //test si la place est deja prise
         for (let index = 0; index < this.listeCubes.length; index++) {
@@ -261,7 +266,7 @@ class Tetris {
             }
         }
 
-       
+
         if (!fin) {
             this.listeCubes.push(piece.cubeA, piece.cubeB, piece.cubeC, piece.cubeD);
 
@@ -271,7 +276,7 @@ class Tetris {
         else {
             this.finirPartie();
         }
-        
+
     }
 
     /**
