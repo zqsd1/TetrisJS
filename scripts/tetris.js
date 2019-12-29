@@ -28,104 +28,44 @@ class Tetris {
     deplacerPiece(params) {
         try {
 
-            var isLibre = true;
-
             if (this.listeCubes.length >= 4) {
 
                 // pour 4 cube
 
                 //recup la piece active
                 // c'est les memes cube que dans listeCubes == les modifier modifie ceux dans listeCubes
-                var pieceActive = this.listeCubes.slice(-4);
+                var pieceActive = new PieceBase(this.listeCubes.slice(-4));
 
                 if (params === "ArrowLeft") {
 
-                    /**
-                     * TODO bloc dans fct 
-                     * param pieceactiv , x ,y  ,listecube?et virer la verif de la class?
-                     * return bool
-                     * 
-                     * */
-                    pieceActive.forEach(cube => {
-                        //verifie si sa deborde
-                        if ((cube.x - 1) < 0) {
-                            isLibre = false;
-                        }
-                        else {
-                            //verifie si la case est prise
-                            for (let index = 0; index < this.listeCubes.length - 4; index++) {
-                                if (cube.x - 1 === this.listeCubes[index].x && cube.y === this.listeCubes[index].y) {
-                                    isLibre = false;
-                                    break;
-                                }
-
-                            }
-                        }
-                    });
-                    /**
-                     * 
-                     */
-
-                    if (isLibre) {
-                        pieceActive.forEach(cube => {
-                            cube.x = cube.x - 1;
-                        });
+                    //slice pour enlever la piece active de la verification
+                    if (pieceActive.verifier(this.listeCubes.slice(0, -4), this.nbCubeX, this.nbCubeY, -1)) {
+                        pieceActive.deplacer(-1);
                     }
                 }
 
                 if (params === "ArrowRight") {
-                    pieceActive.forEach(cube => {
-                        if (cube.x + 1 >= this.nbCubeX) {
-                            isLibre = false;
-                        }
-                        else {
-                            for (let index = 0; index < this.listeCubes.length - 4; index++) {
-                                if ((cube.x + 1) === this.listeCubes[index].x && cube.y === this.listeCubes[index].y) {
-                                    isLibre = false;
-                                    break;
-                                }
 
-                            }
-                        }
-                    });
 
-                    if (isLibre) {
-                        pieceActive.forEach(cube => {
-                            cube.x = cube.x + 1;
-                        });
+                    if (pieceActive.verifier(this.listeCubes.slice(0, -4), this.nbCubeX, this.nbCubeY, 1)) {
+                        pieceActive.deplacer(1);
                     }
 
                 }
 
                 if (params === "bas") {
 
-                    pieceActive.forEach(cube => {
-                        if (cube.y + 1 >= this.nbCubeY) {
-                            isLibre = false;
-                        }
-                        else {
-                            for (let index = 0; index < this.listeCubes.length - 4; index++) {
-                                if (cube.x === this.listeCubes[index].x && cube.y + 1 === this.listeCubes[index].y) {
-                                    isLibre = false;
-                                    break;
-                                }
-
-                            }
-                        }
-                    });
-
-                    if (isLibre) {
-                        pieceActive.forEach(cube => {
-                            cube.y = cube.y + 1;
-                        });
-
-
+                    if (pieceActive.verifier(this.listeCubes.slice(0, -4), this.nbCubeX, this.nbCubeY, 0, 1)) {
+                        pieceActive.deplacer(0, 1);
 
                     }
+                    //si on peut pas descendre la piece faut verifier que les ligne ou elle est sont pas complete 
+                    //si oui les suppr et faire descendre celles qui sont en haut 
+                    //creer une nouvelle piece                   
                     else {
                         var lignesCheck = [];
                         // obtenir les numero y 
-                        pieceActive.forEach(cube => {
+                        pieceActive.cubes.forEach(cube => {
                             if (!lignesCheck.includes(cube.y)) {
                                 lignesCheck.push(cube.y);
                             }
@@ -140,12 +80,6 @@ class Tetris {
                                 index--;//parce que splice decale le tab
                             }
                         }
-
-                        //tri du plus petit au plus grand
-                        //TODO a un interet ?
-                        // lignesCheck.sort(function (a, b) {
-                        //     return a - b;
-                        // });
 
                         //enleve les ligne complete
                         for (let index = 0; index < lignesCheck.length; index++) {
@@ -165,7 +99,6 @@ class Tetris {
 
                     }
                 }
-
             }
             else
                 this.creerPiece();
@@ -250,29 +183,16 @@ class Tetris {
      * @param {*} params 
      */
     creerPiece(params) {
-        var fin = false;
-
 
         var piece = new PieceS(Math.floor((this.nbCubeX - 1) / 2), 0);
 
-        //test si la place est deja prise
-        for (let index = 0; index < this.listeCubes.length; index++) {
-            if (this.listeCubes[index].x === piece.cubeA.x && this.listeCubes[index].y === piece.cubeA.y
-                || this.listeCubes[index].x === piece.cubeB.x && this.listeCubes[index].y === piece.cubeB.y
-                || this.listeCubes[index].x === piece.cubeC.x && this.listeCubes[index].y === piece.cubeC.y
-                || this.listeCubes[index].x === piece.cubeD.x && this.listeCubes[index].y === piece.cubeD.y) {
-                fin = true;
-                break
-            }
-        }
-
-
-        if (!fin) {
-            this.listeCubes.push(piece.cubeA, piece.cubeB, piece.cubeC, piece.cubeD);
+        //test si on la place de la nouvelle piece est occupé
+        if (piece.verifier(this.listeCubes, this.nbCubeX, this.nbCubeY)) {
+            this.listeCubes.push(piece.cubes[0],piece.cubes[1],piece.cubes[2],piece.cubes[3]);
+            //FIXME event
+            document.dispatchEvent(this.onModif);
 
         }
-
-
         else {
             this.finirPartie();
         }
@@ -287,7 +207,6 @@ class Tetris {
 
         this.listeCubes = [];
         //FIXME
-
         //var tempo = window.setInterval(deplacerPiece, params, "bas");
 
         this.isPlay = true;
