@@ -13,7 +13,7 @@ requirejs.config({
 
 
 // Start the main app logic.
-requirejs(['cubeClass', 'piecesClass', 'tetris'],
+requirejs(['cubeClass', 'piecesClass', 'tetris','utils'],
     function (cubeClass, tetris) {
 
 
@@ -70,10 +70,11 @@ requirejs(['cubeClass', 'piecesClass', 'tetris'],
          * @param {*} params  
          */
         function inputUser(params) {
-
+            params.preventDefault();
             if (params.key == "ArrowLeft" || params.key == "ArrowRight") {
                 tetris.deplacerPiece(params.key);
             }
+            
         }
 
 
