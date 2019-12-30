@@ -184,11 +184,11 @@ class Tetris {
      */
     creerPiece(params) {
 
-        var piece = new PieceS(Math.floor((this.nbCubeX - 1) / 2), 0);
+        var piece = pieceFactory(Math.floor((this.nbCubeX - 1) / 2), 0);
 
-        //test si on la place de la nouvelle piece est occupé
+        // test si on la place de la nouvelle piece est occupé
         if (piece.verifier(this.listeCubes, this.nbCubeX, this.nbCubeY)) {
-            this.listeCubes.push(piece.cubes[0],piece.cubes[1],piece.cubes[2],piece.cubes[3]);
+            this.listeCubes.push(piece.cubes[0], piece.cubes[1], piece.cubes[2], piece.cubes[3]);
             //FIXME event
             document.dispatchEvent(this.onModif);
 
