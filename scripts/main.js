@@ -18,8 +18,8 @@ requirejs(['cubeClass', 'piecesClass', 'tetris','utils'],
 
 
 
-        var nbCubeX = 6;
-        var nbCubeY = 10;
+        var nbCubeX = 10;
+        var nbCubeY = 20;
         var canvasTetris = document.getElementById("canvasTetris");
         var canvasLargeur = canvasTetris.getAttribute("width");
         var canvasHauteur = canvasTetris.getAttribute("height");
@@ -70,8 +70,9 @@ requirejs(['cubeClass', 'piecesClass', 'tetris','utils'],
          * @param {*} params  
          */
         function inputUser(params) {
-            params.preventDefault();
-            if (params.key == "ArrowLeft" || params.key == "ArrowRight") {
+  
+            if (params.key == "ArrowLeft" || params.key == "ArrowRight"||params.key =="ArrowUp") {
+                params.preventDefault();
                 tetris.deplacerPiece(params.key);
             }
             
