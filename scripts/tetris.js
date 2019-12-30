@@ -99,6 +99,11 @@ class Tetris {
 
                     }
                 }
+
+
+                if (params ==="ArrowUp") {
+                    pieceActive.tourner(this.listeCubes.slice(0, -4),this.nbCubeX, this.nbCubeY);
+                }
             }
             else
                 this.creerPiece();

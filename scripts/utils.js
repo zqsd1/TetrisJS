@@ -93,16 +93,25 @@ function getRandomIntInclusive(min, max) {
  * @param {number} dy le deplacement en y
 //TODO rename
  */
-function cubeIsFreeDeplacement(tableau, nbcubeX = 10, nbcubeY = 20, cube, dx = 0, dy = 0) {
-    for (let index = 0; index < tableau.length; index++) {
-        if (tableau[index].x === cube.x + dx && tableau[index].y === cube.y + dy
-            || cube.x + dx < 0
-            || cube.x + dx >= nbcubeX
-            || cube.y + dy >= nbcubeY) {
-            return false;
-        }
+function cubeIsFreeDeplacement(tableau, nbcubeX, nbcubeY, cube, dx = 0, dy = 0) {
 
+    //verifie si y'a des cube dans le jeux qui peuvent gener
+    if (tableau.length > 0) {
+        for (let index = 0; index < tableau.length; index++) {
+            if (tableau[index].x === cube.x + dx && tableau[index].y === cube.y + dy) {
+                return false;
+            }
+        }
     }
-    return true;
+
+    //verifie si le cube depasse pas du jeux
+    if (cube.x + dx < 0
+        || cube.x + dx >= nbcubeX
+        || cube.y + dy >= nbcubeY) {
+        return false;
+    }
+
+
+return true;
 
 }
