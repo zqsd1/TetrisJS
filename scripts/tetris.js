@@ -39,7 +39,7 @@ class Tetris {
                 if (params === "ArrowLeft") {
 
                     //slice pour enlever la piece active de la verification
-                    if (pieceActive.verifier(this.listeCubes.slice(0, -4), this.nbCubeX, this.nbCubeY, -1)) {
+                    if (pieceActive.testerDeplacement(this.listeCubes.slice(0, -4), this.nbCubeX, this.nbCubeY, -1)) {
                         pieceActive.deplacer(-1);
                     }
                 }
@@ -47,7 +47,7 @@ class Tetris {
                 if (params === "ArrowRight") {
 
 
-                    if (pieceActive.verifier(this.listeCubes.slice(0, -4), this.nbCubeX, this.nbCubeY, 1)) {
+                    if (pieceActive.testerDeplacement(this.listeCubes.slice(0, -4), this.nbCubeX, this.nbCubeY, 1)) {
                         pieceActive.deplacer(1);
                     }
 
@@ -55,7 +55,7 @@ class Tetris {
 
                 if (params === "bas") {
 
-                    if (pieceActive.verifier(this.listeCubes.slice(0, -4), this.nbCubeX, this.nbCubeY, 0, 1)) {
+                    if (pieceActive.testerDeplacement(this.listeCubes.slice(0, -4), this.nbCubeX, this.nbCubeY, 0, 1)) {
                         pieceActive.deplacer(0, 1);
 
                     }
@@ -63,6 +63,9 @@ class Tetris {
                     //si oui les suppr et faire descendre celles qui sont en haut 
                     //creer une nouvelle piece                   
                     else {
+
+
+                        //TODO y'a mieux a faire
                         var lignesCheck = [];
                         // obtenir les numero y 
                         pieceActive.cubes.forEach(cube => {
@@ -75,11 +78,14 @@ class Tetris {
                         //verifie si la ligne est complete
                         //enleve les element qui sont pas complet              
                         for (let index = 0; index < lignesCheck.length; index++) {
-                            if (!this.verifierLigne(lignesCheck[index])) {
+                            if (!this.testerLigneComplete(lignesCheck[index])) {
                                 lignesCheck.splice(index, 1);
                                 index--;//parce que splice decale le tab
                             }
                         }
+
+                        //////
+
 
                         //enleve les ligne complete
                         for (let index = 0; index < lignesCheck.length; index++) {
@@ -125,18 +131,18 @@ class Tetris {
      * @param {number} params le numero de la ligne a verifier
      *
      */
-    verifierLigne(params) {
+    testerLigneComplete(params) {
 
         //lister tout les cube de la ligne 
-        var tmp = [];
+        let  tmp = 0;
         this.listeCubes.forEach(cube => {
             if (cube.y === params) {
-                tmp.push(cube);
+                tmp ++;
             }
         });
 
         //ligne complete 
-        if (tmp.length === this.nbCubeX) {
+        if (tmp === this.nbCubeX) {
             return true;
 
         }
@@ -176,7 +182,8 @@ class Tetris {
 
         for (let index = 0; index < this.listeCubes.length; index++) {
             if (this.listeCubes[index].y < params) {
-                this.listeCubes[index].y = this.listeCubes[index].y + 1;
+
+                this.listeCubes[index].deplacer(0,1);// = this.listeCubes[index].y + 1;
             }
 
         }
@@ -192,7 +199,7 @@ class Tetris {
         var piece = pieceFactory(Math.floor((this.nbCubeX - 1) / 2), 0);
 
         // test si on la place de la nouvelle piece est occupé
-        if (piece.verifier(this.listeCubes, this.nbCubeX, this.nbCubeY)) {
+        if (piece.testerDeplacement(this.listeCubes, this.nbCubeX, this.nbCubeY)) {
             this.listeCubes.push(piece.cubes[0], piece.cubes[1], piece.cubes[2], piece.cubes[3]);
             //FIXME event
             document.dispatchEvent(this.onModif);
