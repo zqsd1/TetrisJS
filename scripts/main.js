@@ -20,6 +20,7 @@ requirejs(['cubeClass', 'piecesClass', 'tetris','utils'],
 
         var nbCubeX = 10;
         var nbCubeY = 20;
+        var tempo = 500;
         var canvasTetris = document.getElementById("canvasTetris");
         var canvasLargeur = canvasTetris.getAttribute("width");
         var canvasHauteur = canvasTetris.getAttribute("height");
@@ -43,7 +44,7 @@ requirejs(['cubeClass', 'piecesClass', 'tetris','utils'],
         btnStart.onclick = demarrer;
 
         //le temps entre chaque chute de piece
-        var tempo = 500;
+       
         var interval;
         function demarrer(params) {
             if (!tetris.isPlay) {
@@ -72,7 +73,7 @@ requirejs(['cubeClass', 'piecesClass', 'tetris','utils'],
         function inputUser(params) {
   
             if (params.key == "ArrowLeft" || params.key == "ArrowRight"||params.key =="ArrowUp") {
-                params.preventDefault();
+                params.preventDefault();// pour que la page bouge pas
                 tetris.deplacerPiece(params.key);
             }
             
@@ -84,7 +85,7 @@ requirejs(['cubeClass', 'piecesClass', 'tetris','utils'],
          * @param {Array} params 
          * la fonction qui fait le dessin dans le canvas
          */
-        function dessiner(params) {
+        function dessiner(tableau) {
 
             if (canvasTetris.getContext) {
                 var dessinateur = canvasTetris.getContext("2d");
