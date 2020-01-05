@@ -1,42 +1,197 @@
 var config = {
     "nbCubeX": 10,
-    "nbCubeY": 20
+    "nbCubeY": 20,
+    "temporisation" : 500
 }
 
 var configPieces = {
     1: {
         "nom": "carre",
-        "couleur": "orange"
+        "couleur": "orange",
+        "cubes": [
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 1,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 1,
+
+            },
+            {
+                "x": 1,
+                "y": 1
+            }
+        ]
+
 
     },
     2: {
         "nom": "z",
-        "couleur": "bleu"
+        "couleur": "blue",
+        "cubes": [
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 1,
+                "y": 0
+            },
+            {
+                "x": 1,
+                "y": 1,
+                "iscentre": true
+            },
+            {
+                "x": 2,
+                "y": 1
+            }
+
+        ]
+
+
     },
     3: {
         "nom": "s",
-        "couleur": "vert"
+        "couleur": "green",
+        "cubes": [
+            {
+                "x": 0,
+                "y": 1
+            },
+            {
+                "x": 1,
+                "y": 1,
+                "iscentre": true
+            },
+            {
+                "x": 1,
+                "y": 0
+
+            },
+            {
+                "x": 2,
+                "y": 0
+            }
+
+        ]
+
+
     },
     4: {
         "nom": "I",
-        "couleur": "violet"
+        "couleur": "purple",
+        "cubes": [
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 1,
+                "iscentre": true
+            },
+            {
+                "x": 0,
+                "y": 2,
+
+            },
+            {
+                "x": 0,
+                "y": 3
+            }
+       
+        ]
+
+
     },
     5: {
         "nom": "L",
-        "couleur": "jaune"
+        "couleur": "yellow",
+        "cubes": [
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 1,
+                "iscentre" : true
+            },
+            {
+                "x": 0,
+                "y": 2,
+                
+            },
+            {
+                "x": 1,
+                "y": 2
+            }
+ 
+        ]
+
     },
     6: {
         "nom": "Linverse",
-        "couleur": "rouge"
+        "couleur": "red",
+        "cubes": [
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,  
+                "y": 1,
+                "iscentre" : true
+            },
+            {
+                "x": 0,
+                "y": 2,
+              
+            },
+            {
+                "x": -1,
+                "y": 2
+            }
+    
+        ]
+
+
     },
     7: {
         "nom": "pyramide",
-        "couleur": "blanc"
+        "couleur": "white",
+        "cubes": [
+            {
+                "x": 0,
+                "y": 0,
+                  "iscentre" : true
+            },
+            {
+                "x": -1,
+                "y": 0
+            },
+            {
+                "x": 1,
+                "y": 0,
+              
+            },
+            {
+                "x": 0,
+                "y": 1
+            }
+         
+        ]
+
     }
 
 
 }
-
 
 /**
  * generer les differente piece aleatoirement
@@ -44,12 +199,20 @@ var configPieces = {
  * @param {number} y position y
  */
 function pieceFactory(x = 0, y = 0) {
+    
     //TODO voir reflection
+
 
 
     let piece = getRandomIntInclusive(1, 7);
     switch (piece) {
         case 1:
+// return new PieceBase([    
+//     new Cube(configPieces[piece].cubes[0].x+x,configPieces[piece].cubes[0].y+y,configPieces[piece].couleur),
+//     new Cube(configPieces[piece].cubes[1].x+x,configPieces[piece].cubes[1].y+y,configPieces[piece].couleur),
+//     new Cube(configPieces[piece].cubes[2].x+x,configPieces[piece].cubes[2].y+y,configPieces[piece].couleur),
+//     new Cube(configPieces[piece].cubes[3].x+x,configPieces[piece].cubes[3].y+y,configPieces[piece].couleur)]
+//     );
             return new PieceCarre(x, y);
         case 2:
             return new PieceZ(x, y);
@@ -82,36 +245,3 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-
-/**
- * test si le deplacement d'un cube est possible dans le tableau de cube
- * @param {Array} tableau le tableau de cube
- * @param {number} nbcubeX le nombre de cube sur une ligne
- * @param {number} nbcubeY le nombre de ligne de cube
- * @param {Cube} cube le cube a tester
- * @param {number} dx le deplacement en x
- * @param {number} dy le deplacement en y
-//TODO rename
- */
-function cubeIsFreeDeplacement(tableau, nbcubeX, nbcubeY, cube, dx = 0, dy = 0) {
-
-    //verifie si y'a des cube dans le jeux qui peuvent gener
-    if (tableau.length > 0) {
-        for (let index = 0; index < tableau.length; index++) {
-            if (tableau[index].x === cube.x + dx && tableau[index].y === cube.y + dy) {
-                return false;
-            }
-        }
-    }
-
-    //verifie si le cube depasse pas du jeux
-    if (cube.x + dx < 0
-        || cube.x + dx >= nbcubeX
-        || cube.y + dy >= nbcubeY) {
-        return false;
-    }
-
-
-return true;
-
-}
