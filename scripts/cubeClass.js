@@ -28,29 +28,4 @@ class Cube {
 
     }
 
-    /**
-     * 
-     * @param {Array} tableau tableau pour tester si il y a deja un cube dans le nouvel emplacement
-     * @param {number} nbY le nombre de cube possible en x
-     * @param {number} nbX le nombre de cube possible en y
-     * @param {number} dx le decalage en y
-     * @param {number} dy le decalage en x
-     */
-    testerDeplacement(tableau,nbX,nbY, dx = 0, dy = 0) {
-        //1 test pour si le cube depasse du plateau
-        if (this.x +dx <0
-            ||this.x +dx >=nbX
-            || this.y+dy>= nbY) {
-                return false;
-            
-        }
-        //2 test pour si la case du deplacement est deja occupé
-        for (let index = 0; index < tableau.length; index++) {
-           if (tableau[index].x ===this.x+dx &&tableau[index].y ===this.y+dy) {
-               return false;
-           } 
-            
-        }
-        return true;
-    }
 }
