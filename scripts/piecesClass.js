@@ -14,8 +14,6 @@ class PieceBase {
     deplacer(dx = 0, dy = 0) {
         for (let index = 0; index < this.cubes.length; index++) {
             this.cubes[index].deplacer(dx, dy);
-            // this.cubes[index].x += dx;
-            // this.cubes[index].y += dy;
         }
         return this.cubes;
     }
@@ -39,10 +37,6 @@ class PieceBase {
 
         }
         if (centre != null) {
-            //1boucle pour verif une 2eme pour faire la rotation
-
-
-
             for (let index = 0; index < this.cubes.length; index++) {
                 if (!this.cubes[index].isCentre) {
 
