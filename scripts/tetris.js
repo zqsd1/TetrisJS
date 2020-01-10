@@ -1,4 +1,4 @@
-class Tetris {
+class Tetris extends Subject {
 
     /**
      * 
@@ -7,15 +7,20 @@ class Tetris {
 
      */
     constructor(nbCubeX, nbCubeY) {
+        super();
         this.nbCubeX = nbCubeX;
         this.nbCubeY = nbCubeY;
 
         this.listeCubes = [];//tableau qui contient tout les cube de la zone de jeu
 
         this.isPlay = false;
+        this.compteurLignesSuppr = 0;
+        this.pieceSuivante = null;
+
+
         //FIXME event pour quand on modif le tetris pour prevenir qu'il faut redessiner
-        this.onModif = new Event("modif");
-        this.onFin = new Event("fin");
+        // this.onModif = new Event("modif");
+        // this.onFin = new Event("fin");
 
 
     }
@@ -69,7 +74,15 @@ class Tetris {
 
                 }
 
-                else if (params === "bas") {
+                else if (params === "ArrowUp") {
+                    pieceFantome.tourner();
+                    if (this.testerDeplacement(pieceFantome)) {
+                        pieceActive.tourner();
+                    }
+
+                }
+
+                else if (params === "ArrowDown") {
                     pieceFantome.deplacer(0, 1);
                     if (this.testerDeplacement(pieceFantome)) {
                         pieceActive.deplacer(0, 1);
@@ -86,7 +99,7 @@ class Tetris {
 
 
                         //TODO y'a mieux a faire FILTER 
-                        
+
                         let lignesCheck = [];
                         // obtenir les numero y 
                         pieceActive.cubes.forEach(cube => {
@@ -128,13 +141,7 @@ class Tetris {
                 }
 
 
-                else if (params === "ArrowUp") {
-                    pieceFantome.tourner();
-                    if (this.testerDeplacement(pieceFantome)) {
-                        pieceActive.tourner();
-                    }
 
-                }
             }
             else
                 this.creerPiece();
@@ -143,8 +150,10 @@ class Tetris {
             console.log(error);
         }
 
+
+        this.notifyAllObservers("modif");
         //FIXME  add event POur redessin        pas sur pour le fait que sa soit sur le document
-        document.dispatchEvent(this.onModif);
+        //document.dispatchEvent(this.onModif);
 
 
 
@@ -165,13 +174,14 @@ class Tetris {
                 || piece.cubes[i].x >= this.nbCubeX
                 || piece.cubes[i].y >= this.nbCubeY) {
                 return false;
-            }
-            //TODO 
+            } 
+            
+            //2 verifie que la place est pas deja prise
             // if (this.listeCubes.some(cube => cube.x ===piece.cubes[i].x &&cube.y ===piece.cubes[i].y)) {
             //     return false
             // }
 
-            //2 verifie que la place est pas deja prise
+           
             for (let j = 0; j < this.listeCubes.length - 4; j++) {
                 if (this.listeCubes[j].x === piece.cubes[i].x && this.listeCubes[j].y === piece.cubes[i].y) {
                     return false
@@ -226,7 +236,7 @@ class Tetris {
      * @param {number} params numero de la ligne Y
      */
     effacerLigne(params) {
-//TODO effacerCUbe plutot ? et utiliser un tab renvoyé par testerlignecomplet ?
+        //TODO effacerCUbe plutot ? et utiliser un tab renvoyé par testerlignecomplet ?
 
         for (let index = 0; index < this.listeCubes.length; index++) {
             if (this.listeCubes[index].y === params) {
@@ -262,14 +272,22 @@ class Tetris {
      */
     creerPiece(params) {
 
-        var piece = pieceFactory(Math.floor((this.nbCubeX - 1) / 2), 0);
-
+        if (this.pieceSuivante == null) {
+            var piece = pieceFactory(Math.floor((this.nbCubeX - 1) / 2), 0);
+        }
+        else {
+            var piece = this.pieceSuivante;
+            piece.deplacer(Math.floor((this.nbCubeX - 1) / 2));
+        }
         // test si on la place de la nouvelle piece est occupé
         if (this.testerDeplacement(piece)) {
 
             this.listeCubes.push(piece.cubes[0], piece.cubes[1], piece.cubes[2], piece.cubes[3]);
+
+            this.pieceSuivante = pieceFactory(0, 0);
+            this.notifyAllObservers("modif");
             //FIXME event
-            document.dispatchEvent(this.onModif);
+            //document.dispatchEvent(this.onModif);
 
         }
         else {
@@ -294,7 +312,21 @@ class Tetris {
     finirPartie() {
 
         this.isPlay = false;
-        document.dispatchEvent(this.onFin);
+        this.notifyAllObservers("fin");
+
+        //document.dispatchEvent(this.onFin);
+
+    }
+    notifyObserver(observer,param) {
+        var index = this.observers.indexOf(observer);
+        if (index > -1) {
+            this.observers[index].notify(param);
+        }
+    }
+    notifyAllObservers(param) {
+        for (var i = 0; i < this.observers.length; i++) {
+            this.observers[i].notify(param);
+        }
 
     }
 
