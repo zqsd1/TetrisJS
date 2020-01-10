@@ -285,7 +285,7 @@ class Tetris extends Subject {
             this.listeCubes.push(piece.cubes[0], piece.cubes[1], piece.cubes[2], piece.cubes[3]);
 
             this.pieceSuivante = pieceFactory(0, 0);
-            this.notifyAllObservers("modif");
+            this.notifyAllObservers("nvlPiece");
             //FIXME event
             //document.dispatchEvent(this.onModif);
 
