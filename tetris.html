@@ -11,18 +11,24 @@
 </head>
 
 <body>
-    <div>
-        <canvas id="canvasTetris" height="1200" width="600" style="border: 1px black solid; 
+    <div class="content" >
+        <div style="float: left;">
+            <canvas id="canvasTetris" height="900" width="450" style="border: 1px black solid; 
         background-color: black;">
-        </canvas>
-    </div>
-    <div>
-        <button id="btnStart">Demarrer</button>
-    </div>
+            </canvas>
+        </div>
+        <div style="float: left;">
+            <div style="float: right;">
+                <canvas id="pieceSuivante" height="100" width="100" style="background-color:black"></canvas>
+            </div>
+            <div id="nbLigne" style="position: relative; top: 120px;"></div>
+            <div id="couleurPieces"></div> 
 
+            <div style="position: relative;top: 80px;left: 40px;">
+                <button id="btnStart">Demarrer</button>
+            </div>
+        </div>
+    </div>
     <script data-main="scripts/main" src="scripts/requireJS.js"></script>
-
-
-</body>
 
 </html>

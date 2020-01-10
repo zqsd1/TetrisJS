@@ -13,7 +13,7 @@ requirejs.config({
 
 
 // Start the main app logic.
-requirejs(['utils','cubeClass', 'piecesClass', 'tetris'],
+requirejs(['utils', 'cubeClass', 'piecesClass', 'tetris'],
     function (cubeClass, tetris) {
 
         class obs extends Observer {
@@ -25,8 +25,12 @@ requirejs(['utils','cubeClass', 'piecesClass', 'tetris'],
 
                     dessiner()
                 }
-                else if ("fin") {
+                else if (param == "fin") {
                     gameOver();
+                }
+                else if (param == "nvlPiece") {
+                    dessiner();
+                    dessinerSuivant();
                 }
             }
 
@@ -40,6 +44,14 @@ requirejs(['utils','cubeClass', 'piecesClass', 'tetris'],
         var canvasHauteur = canvasTetris.getAttribute("height");
         var largeurCube = canvasLargeur / nbCubeX;
         var hauteurCube = canvasHauteur / nbCubeY;
+
+
+        var canvasSuivant = document.getElementById("pieceSuivante");
+        var suivantLargeur = canvasSuivant.getAttribute("width");
+        var suivantHauteur = canvasSuivant.getAttribute("height");
+        var cubeSuivantL = suivantLargeur / 4;
+        var cubeSuivantH = suivantHauteur / 4;
+
 
         var tetris = new Tetris(nbCubeX, nbCubeY);
 
@@ -104,7 +116,7 @@ requirejs(['utils','cubeClass', 'piecesClass', 'tetris'],
         function dessiner(tableau) {
 
             if (canvasTetris.getContext) {
-                var dessinateur = canvasTetris.getContext("2d");
+                let dessinateur = canvasTetris.getContext("2d");
 
                 //efface le canvas
                 dessinateur.clearRect(0, 0, canvasLargeur, canvasHauteur);
@@ -124,6 +136,31 @@ requirejs(['utils','cubeClass', 'piecesClass', 'tetris'],
         }
 
 
+        function dessinerSuivant(tableau) {
+
+            if (canvasSuivant.getContext) {
+                let dessinateur = canvasSuivant.getContext("2d");
+
+                //efface le canvas
+                dessinateur.clearRect(0, 0, suivantLargeur, suivantHauteur);
+
+                if (tetris.pieceSuivante != null) {
+
+
+                    tetris.pieceSuivante.cubes.forEach(cube => {
+
+                        try {
+                            dessinateur.fillStyle = cube.couleur;
+                            dessinateur.fillRect((cube.x + 1) * cubeSuivantL, cube.y * cubeSuivantH, cubeSuivantL, cubeSuivantH);
+
+                        } catch (error) {
+                            console.log(error);
+                        }
+
+                    });
+                }
+            }
+        }
 
 
 
