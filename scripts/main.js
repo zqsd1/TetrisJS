@@ -13,10 +13,24 @@ requirejs.config({
 
 
 // Start the main app logic.
-requirejs(['cubeClass', 'piecesClass', 'tetris','utils'],
+requirejs(['utils','cubeClass', 'piecesClass', 'tetris'],
     function (cubeClass, tetris) {
 
+        class obs extends Observer {
+            constructor() {
+                super();
+            }
+            notify(param) {
+                if (param == "modif") {
 
+                    dessiner()
+                }
+                else if ("fin") {
+                    gameOver();
+                }
+            }
+
+        }
 
         var nbCubeX = 10;
         var nbCubeY = 20;
@@ -31,9 +45,11 @@ requirejs(['cubeClass', 'piecesClass', 'tetris','utils'],
 
         //event creer dans Tetris qui est trigger a chaque fois que le tab est modifié
         //FIXME event
-        document.addEventListener("modif", dessiner);
+        //document.addEventListener("modif", dessiner);
+        var o = new obs();
+        tetris.subscribeObserver(o);
 
-        document.addEventListener("fin", gameOver);
+        //document.addEventListener("fin", gameOver);
 
 
         //pour agir sur les action utilisateur
@@ -44,7 +60,7 @@ requirejs(['cubeClass', 'piecesClass', 'tetris','utils'],
         btnStart.onclick = demarrer;
 
         //le temps entre chaque chute de piece
-       
+
         var interval;
         function demarrer(params) {
             if (!tetris.isPlay) {
@@ -56,7 +72,7 @@ requirejs(['cubeClass', 'piecesClass', 'tetris','utils'],
 
         }
         function game(params) {
-            tetris.deplacerPiece("bas");
+            tetris.deplacerPiece("ArrowDown");
             //soit use event soit appel dessiner ici pour actualiser tetris
         }
 
@@ -71,12 +87,12 @@ requirejs(['cubeClass', 'piecesClass', 'tetris','utils'],
          * @param {*} params  
          */
         function inputUser(params) {
-  
-            if (params.key == "ArrowLeft" || params.key == "ArrowRight"||params.key =="ArrowUp") {
+
+            if (params.key == "ArrowLeft" || params.key == "ArrowRight" || params.key == "ArrowUp" || params.key == "ArrowDown") {
                 params.preventDefault();// pour que la page bouge pas
                 tetris.deplacerPiece(params.key);
             }
-            
+
         }
 
 
