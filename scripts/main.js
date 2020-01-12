@@ -20,49 +20,69 @@ requirejs(['utils', 'cubeClass', 'piecesClass', 'tetris'],
             constructor() {
                 super();
             }
-            notify(param) {
+            notify(param, tableau) {
                 if (param == "modif") {
-
-                    dessiner()
+                    dessin(tableau, document.getElementById("canvasTetris"), config.nbCubeX, config.nbCubeY)
                 }
                 else if (param == "fin") {
                     gameOver();
                 }
                 else if (param == "nvlPiece") {
-                    dessiner();
-                    dessinerSuivant();
+                    dessin(tableau, document.getElementById("pieceSuivante"), 4, 4);
+                }
+                else if ((param == "ligne")) {
+                    document.getElementById("nbLigne").innerHTML = "ligne supprimé : " + tetris.compteurLignesSuppr;
                 }
             }
 
         }
 
-        var nbCubeX = 10;
-        var nbCubeY = 20;
-        var tempo = 500;
-        var canvasTetris = document.getElementById("canvasTetris");
-        var canvasLargeur = canvasTetris.getAttribute("width");
-        var canvasHauteur = canvasTetris.getAttribute("height");
-        var largeurCube = canvasLargeur / nbCubeX;
-        var hauteurCube = canvasHauteur / nbCubeY;
+        var nbCubeX = config.nbCubeX;
+        var nbCubeY = config.nbCubeY;
+        var tempo = config.temporisation; //le temps entre chaque chute de piece
+
+        /**
+         * dessine les cube d'un tableau dans un canvas
+         * @param {array} tableau tab de cub
+         * @param {*} canvas le canvas sur lequel il faut dessiner
+         * @param {number} cubex nb case en x
+         * @param {number} cubey nb case en y
+         */
+        function dessin(tableau, canvas, cubex, cubey) {
 
 
-        var canvasSuivant = document.getElementById("pieceSuivante");
-        var suivantLargeur = canvasSuivant.getAttribute("width");
-        var suivantHauteur = canvasSuivant.getAttribute("height");
-        var cubeSuivantL = suivantLargeur / 4;
-        var cubeSuivantH = suivantHauteur / 4;
+            let canvasLargeur = canvas.getAttribute("width");
+            let canvasHauteur = canvas.getAttribute("height");
+            let largeurCube = canvasLargeur / cubex;
+            let hauteurCube = canvasHauteur / cubey;
 
+            if (canvas.getContext) { 
+                try {
+                let dessinateur = canvas.getContext("2d");
+               
+                    //efface le canvas
+                    dessinateur.clearRect(0, 0, canvasLargeur, canvasHauteur);
+
+                    tableau.forEach(cube => {
+                        dessinateur.fillStyle = cube.couleur;
+                        dessinateur.fillRect(cube.x * largeurCube, cube.y * hauteurCube, largeurCube, hauteurCube);
+
+
+
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+        }
 
         var tetris = new Tetris(nbCubeX, nbCubeY);
 
-        //event creer dans Tetris qui est trigger a chaque fois que le tab est modifié
-        //FIXME event
-        //document.addEventListener("modif", dessiner);
+
+        //design pattern observer => event
         var o = new obs();
         tetris.subscribeObserver(o);
-
-        //document.addEventListener("fin", gameOver);
-
 
         //pour agir sur les action utilisateur
         document.onkeydown = inputUser;
@@ -71,21 +91,20 @@ requirejs(['utils', 'cubeClass', 'piecesClass', 'tetris'],
         var btnStart = document.getElementById("btnStart");
         btnStart.onclick = demarrer;
 
-        //le temps entre chaque chute de piece
+
 
         var interval;
         function demarrer(params) {
             if (!tetris.isPlay) {
                 tetris.debuterPartie();
                 interval = window.setInterval(game, tempo);
-                //FIXME window.setInterval(tetris.deplacerPiece, tempo, "bas");
+
             }
 
 
         }
         function game(params) {
             tetris.deplacerPiece("ArrowDown");
-            //soit use event soit appel dessiner ici pour actualiser tetris
         }
 
 
@@ -105,69 +124,6 @@ requirejs(['utils', 'cubeClass', 'piecesClass', 'tetris'],
                 tetris.deplacerPiece(params.key);
             }
 
-        }
-
-
-        /**
-         * 
-         * @param {Array} params 
-         * la fonction qui fait le dessin dans le canvas
-         */
-        function dessiner(tableau) {
-
-            if (canvasTetris.getContext) {
-                let dessinateur = canvasTetris.getContext("2d");
-
-                //efface le canvas
-                dessinateur.clearRect(0, 0, canvasLargeur, canvasHauteur);
-
-                tetris.listeCubes.forEach(cube => {
-
-                    try {
-                        dessinateur.fillStyle = cube.couleur;
-                        dessinateur.fillRect(cube.x * largeurCube, cube.y * hauteurCube, largeurCube, hauteurCube);
-
-                    } catch (error) {
-                        console.log(error);
-                    }
-
-                });
-            }
-        }
-
-
-        function dessinerSuivant(tableau) {
-
-            if (canvasSuivant.getContext) {
-                let dessinateur = canvasSuivant.getContext("2d");
-
-                //efface le canvas
-                dessinateur.clearRect(0, 0, suivantLargeur, suivantHauteur);
-
-                if (tetris.pieceSuivante != null) {
-
-
-                    tetris.pieceSuivante.cubes.forEach(cube => {
-
-                        try {
-                            dessinateur.fillStyle = cube.couleur;
-                            dessinateur.fillRect((cube.x + 1) * cubeSuivantL, cube.y * cubeSuivantH, cubeSuivantL, cubeSuivantH);
-
-                        } catch (error) {
-                            console.log(error);
-                        }
-
-                    });
-                }
-            }
-        }
-
-
-
-
-
-
-
-
+        }  
 
     });
