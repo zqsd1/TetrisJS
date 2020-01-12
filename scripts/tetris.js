@@ -17,13 +17,16 @@ class Tetris extends Subject {
         this.compteurLignesSuppr = 0;
         this.pieceSuivante = null;
 
-
-        //FIXME event pour quand on modif le tetris pour prevenir qu'il faut redessiner
-        // this.onModif = new Event("modif");
-        // this.onFin = new Event("fin");
-
-
     }
+
+    // get pieceSuivante() {
+    //     return this._pieceSuivante;
+    // }
+
+    // set pieceSuivante(value) {
+    //     this._pieceSuivante = value;
+    //     this.notifyAllObservers("nvlPiece");
+    // }
 
 
     /**
@@ -98,7 +101,7 @@ class Tetris extends Subject {
 
 
 
-                        //TODO y'a mieux a faire FILTER 
+                        //TODO y'a mieux a faire FILTER ?
 
                         let lignesCheck = [];
                         // obtenir les numero y 
@@ -121,19 +124,14 @@ class Tetris extends Subject {
                         //////
 
 
-                        //enleve les ligne complete
-                        for (let index = 0; index < lignesCheck.length; index++) {
 
+                        for (let index = 0; index < lignesCheck.length; index++) {
+                            //enleve les ligne complete
                             this.effacerLigne(lignesCheck[index]);
-
-                        };
-                        //descend les ligne au dessus des ligne supprimé
-                        for (let index = 0; index < lignesCheck.length; index++) {
-
-
+                            //descend les ligne au dessus des ligne supprimé
                             this.descendreLigne(lignesCheck[index]);
-                        };
 
+                        };
 
                         this.creerPiece();
 
@@ -151,12 +149,7 @@ class Tetris extends Subject {
         }
 
 
-        this.notifyAllObservers("modif");
-        //FIXME  add event POur redessin        pas sur pour le fait que sa soit sur le document
-        //document.dispatchEvent(this.onModif);
-
-
-
+        this.notifyAllObservers("modif", this.listeCubes);
 
     }
 
@@ -174,14 +167,9 @@ class Tetris extends Subject {
                 || piece.cubes[i].x >= this.nbCubeX
                 || piece.cubes[i].y >= this.nbCubeY) {
                 return false;
-            } 
-            
-            //2 verifie que la place est pas deja prise
-            // if (this.listeCubes.some(cube => cube.x ===piece.cubes[i].x &&cube.y ===piece.cubes[i].y)) {
-            //     return false
-            // }
+            }
 
-           
+
             for (let j = 0; j < this.listeCubes.length - 4; j++) {
                 if (this.listeCubes[j].x === piece.cubes[i].x && this.listeCubes[j].y === piece.cubes[i].y) {
                     return false
@@ -200,33 +188,14 @@ class Tetris extends Subject {
      */
     testerLigneComplete(params) {
 
-
-        //TODO
-        // let tLigne = this.listeCubes.filter(cube => cube.y === params);
-        // if (tLigne.length === this.nbCubeX)
-        //     return true;
-
-        // else
-        //     return false
-
-        //lister tout les cube de la ligne 
-        let tmp = 0;
-        this.listeCubes.forEach(cube => {
-            if (cube.y === params) {
-                tmp++;
-            }
-        });
-
-        //ligne complete 
-        if (tmp === this.nbCubeX) {
+        let tLigne = this.listeCubes.filter(cube => cube.y === params);
+        if (tLigne.length === this.nbCubeX)
+            //ligne complete
             return true;
 
-        }
-        //ligne imcomplete 
-        else {
-            return false;
-
-        }
+        else
+            //ligne incomplete
+            return false
 
     }
 
@@ -236,7 +205,7 @@ class Tetris extends Subject {
      * @param {number} params numero de la ligne Y
      */
     effacerLigne(params) {
-        //TODO effacerCUbe plutot ? et utiliser un tab renvoyé par testerlignecomplet ?
+
 
         for (let index = 0; index < this.listeCubes.length; index++) {
             if (this.listeCubes[index].y === params) {
@@ -246,7 +215,8 @@ class Tetris extends Subject {
 
 
         }
-
+        this.compteurLignesSuppr++;
+        this.notifyAllObservers("ligne");
     }
 
     /**
@@ -259,7 +229,7 @@ class Tetris extends Subject {
         for (let index = 0; index < this.listeCubes.length; index++) {
             if (this.listeCubes[index].y < params) {
 
-                this.listeCubes[index].deplacer(0, 1);// = this.listeCubes[index].y + 1;
+                this.listeCubes[index].deplacer(0, 1);
             }
 
         }
@@ -285,9 +255,9 @@ class Tetris extends Subject {
             this.listeCubes.push(piece.cubes[0], piece.cubes[1], piece.cubes[2], piece.cubes[3]);
 
             this.pieceSuivante = pieceFactory(0, 0);
-            this.notifyAllObservers("nvlPiece");
-            //FIXME event
-            //document.dispatchEvent(this.onModif);
+            this.notifyAllObservers("modif", this.listeCubes);
+            this.notifyAllObservers("nvlPiece", this.pieceSuivante.cubes);
+
 
         }
         else {
@@ -303,9 +273,6 @@ class Tetris extends Subject {
     debuterPartie(params) {
 
         this.listeCubes = [];
-        //FIXME
-        //var tempo = window.setInterval(deplacerPiece, params, "bas");
-
         this.isPlay = true;
 
     }
@@ -314,18 +281,16 @@ class Tetris extends Subject {
         this.isPlay = false;
         this.notifyAllObservers("fin");
 
-        //document.dispatchEvent(this.onFin);
-
     }
-    notifyObserver(observer,param) {
+    notifyObserver(observer, param, tableau) {
         var index = this.observers.indexOf(observer);
         if (index > -1) {
-            this.observers[index].notify(param);
+            this.observers[index].notify(param, tableau);
         }
     }
-    notifyAllObservers(param) {
+    notifyAllObservers(param, tableau) {
         for (var i = 0; i < this.observers.length; i++) {
-            this.observers[i].notify(param);
+            this.observers[i].notify(param, tableau);
         }
 
     }
