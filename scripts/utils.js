@@ -1,51 +1,51 @@
-/**
- * Design Pattern Observer
- */
-class Subject{
-    constructor() {
-        this.observers = [];
-    }
+// /**
+//  * Design Pattern Observer
+//  */
+// class Subject{
+//     constructor() {
+//         this.observers = [];
+//     }
 
-    subscribeObserver(observer) {
-        this.observers.push(observer);
-    }
-    unsubscribeObserver(observer) {
-        var index = this.observers.indexOf(observer);
-        if (index > -1) {
-            this.observers.splice(index, 1);
-        }
-    }
-    notifyObserver(observer) {
-        var index = this.observers.indexOf(observer);
-        if (index > -1) {
-            this.observers[index].notify();
-        }
-    }
-    notifyAllObservers() {
-        for (var i = 0; i < this.observers.length; i++) {
-            this.observers[i].notify(i);
-        }
+//     subscribeObserver(observer) {
+//         this.observers.push(observer);
+//     }
+//     unsubscribeObserver(observer) {
+//         var index = this.observers.indexOf(observer);
+//         if (index > -1) {
+//             this.observers.splice(index, 1);
+//         }
+//     }
+//     notifyObserver(observer) {
+//         var index = this.observers.indexOf(observer);
+//         if (index > -1) {
+//             this.observers[index].notify();
+//         }
+//     }
+//     notifyAllObservers() {
+//         for (var i = 0; i < this.observers.length; i++) {
+//             this.observers[i].notify(i);
+//         }
 
-    }
-}
-
-
-class Observer {
-
-    constructor() {
-
-    }
-    notify(index) {
-        console.log("Observer " + index + " is notified!");
-
-    }
-}
+//     }
+// }
 
 
+// class Observer {
+
+//     constructor() {
+
+//     }
+//     notify(index) {
+//         console.log("Observer " + index + " is notified!");
+
+//     }
+// }
+
+ 
 var config = {
     "nbCubeX": 10,
     "nbCubeY": 20,
-    "temporisation" : 500
+    "temporisation": 500
 }
 
 var configPieces = {
@@ -149,7 +149,7 @@ var configPieces = {
                 "x": 0,
                 "y": 3
             }
-       
+
         ]
 
 
@@ -165,18 +165,18 @@ var configPieces = {
             {
                 "x": 0,
                 "y": 1,
-                "iscentre" : true
+                "iscentre": true
             },
             {
                 "x": 0,
                 "y": 2,
-                
+
             },
             {
                 "x": 1,
                 "y": 2
             }
- 
+
         ]
 
     },
@@ -189,20 +189,20 @@ var configPieces = {
                 "y": 0
             },
             {
-                "x": 0,  
+                "x": 0,
                 "y": 1,
-                "iscentre" : true
+                "iscentre": true
             },
             {
                 "x": 0,
                 "y": 2,
-              
+
             },
             {
                 "x": -1,
                 "y": 2
             }
-    
+
         ]
 
 
@@ -214,7 +214,7 @@ var configPieces = {
             {
                 "x": 0,
                 "y": 0,
-                  "iscentre" : true
+                "iscentre": true
             },
             {
                 "x": -1,
@@ -223,13 +223,13 @@ var configPieces = {
             {
                 "x": 1,
                 "y": 0,
-              
+
             },
             {
                 "x": 0,
                 "y": 1
             }
-         
+
         ]
 
     }
@@ -243,7 +243,7 @@ var configPieces = {
  * @param {number} y position y
  */
 function pieceFactory(x = 0, y = 0) {
-    
+    return new PieceBase(configPieces[getRandomIntInclusive(1, 7)],x,y);
     //TODO voir reflection
 
 
@@ -251,12 +251,13 @@ function pieceFactory(x = 0, y = 0) {
     let piece = getRandomIntInclusive(1, 7);
     switch (piece) {
         case 1:
-// return new PieceBase([    
-//     new Cube(configPieces[piece].cubes[0].x+x,configPieces[piece].cubes[0].y+y,configPieces[piece].couleur),
-//     new Cube(configPieces[piece].cubes[1].x+x,configPieces[piece].cubes[1].y+y,configPieces[piece].couleur),
-//     new Cube(configPieces[piece].cubes[2].x+x,configPieces[piece].cubes[2].y+y,configPieces[piece].couleur),
-//     new Cube(configPieces[piece].cubes[3].x+x,configPieces[piece].cubes[3].y+y,configPieces[piece].couleur)]
-//     );
+
+            // return new PieceBase([    
+            //     new Cube(configPieces[piece].cubes[0].x+x,configPieces[piece].cubes[0].y+y,configPieces[piece].couleur),
+            //     new Cube(configPieces[piece].cubes[1].x+x,configPieces[piece].cubes[1].y+y,configPieces[piece].couleur),
+            //     new Cube(configPieces[piece].cubes[2].x+x,configPieces[piece].cubes[2].y+y,configPieces[piece].couleur),
+            //     new Cube(configPieces[piece].cubes[3].x+x,configPieces[piece].cubes[3].y+y,configPieces[piece].couleur)]
+            //     );
             return new PieceCarre(x, y);
         case 2:
             return new PieceZ(x, y);

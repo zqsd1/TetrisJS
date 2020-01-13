@@ -2,8 +2,28 @@ class PieceBase {
     /**
      * @param {Array} tableau 4 cubes
      */
-    constructor(tableau) {
-        this.cubes = tableau;
+    //TODO multiple choice ctor
+    constructor(param, dx, dy) {
+
+        if (Array.isArray(param)) {
+
+            this.cubes = param;
+        }
+        else if (typeof (param) == "object") {
+            this.cubes = [];
+            for (let index = 0; index < param.cubes.length; index++) {
+
+                this.cubes.push(
+                    new Cube(
+                        param.cubes[index].x + dx,
+                        param.cubes[index].y + dy,
+                        param.couleur,
+                        param.cubes[index].iscentre !== undefined ? true:false)
+                );
+
+            }
+
+        }
     }
 
     /**
@@ -12,30 +32,36 @@ class PieceBase {
      * @param {number} dy le decalage en y
      */
     deplacer(dx = 0, dy = 0) {
+
         for (let index = 0; index < this.cubes.length; index++) {
             this.cubes[index].deplacer(dx, dy);
         }
         return this.cubes;
     }
 
+    get couleur() {
+        return this.cubes[0].couleur;
+    }
 
-  
-    tourner() {
-        //TODO voir fct SIN et COS
-
-        let centre = null;
-
-
-        //trouve lecube qui bouge pas pour la rotation
+    get cubeCentral() {
         for (let index = 0; index < this.cubes.length; index++) {
             if (this.cubes[index].isCentre) {
-
-                centre = this.cubes[index]
-                break;
-
+                return this.cubes[index];
             }
 
         }
+        return null;
+    }
+
+
+    tourner() {
+        //TODO voir fct SIN et COS
+
+        let centre = this.cubeCentral;
+
+
+        //trouve lecube qui bouge pas pour la rotation
+
         if (centre != null) {
             for (let index = 0; index < this.cubes.length; index++) {
                 if (!this.cubes[index].isCentre) {
