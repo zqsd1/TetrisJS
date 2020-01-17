@@ -41,8 +41,8 @@ class PieceBase {
 
     get couleur() {
         return this.cubes[0].couleur;
-    }  
-    
+    }
+
     //trouve lecube qui bouge pas pour la rotation    
     get cubeCentral() {
         for (let index = 0; index < this.cubes.length; index++) {
@@ -61,7 +61,7 @@ class PieceBase {
     tourner() {
         //TODO voir fct SIN et COS
 
-        let centre = this.cubeCentral;    
+        let centre = this.cubeCentral;
 
         if (centre != null) {
             for (let index = 0; index < this.cubes.length; index++) {
@@ -70,11 +70,11 @@ class PieceBase {
                     //recup du decallage par rapport au centre
                     let tmpx = this.cubes[index].x - centre.x;
                     let tmpY = this.cubes[index].y - centre.y;
-
+                   
                     // decalage x+1 = - decalage y
-                    // decalage y+1 = decalage x
-                    this.cubes[index].x = centre.x - tmpY;
-                    this.cubes[index].y = centre.y + tmpx;
+                    // decalage y+1 = decalage x                    
+                    this.cubes[index].deplacer(-tmpx - tmpY, -tmpY + tmpx)//double deplacement => deplace sur le centre et fait le deplacement de la rotation
+
                 }
             }
 
