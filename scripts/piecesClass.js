@@ -18,7 +18,7 @@ class PieceBase {
                         param.cubes[index].x + dx,
                         param.cubes[index].y + dy,
                         param.couleur,
-                        param.cubes[index].iscentre !== undefined ? true:false)
+                        param.cubes[index].iscentre !== undefined ? true : false)
                 );
 
             }
@@ -41,8 +41,9 @@ class PieceBase {
 
     get couleur() {
         return this.cubes[0].couleur;
-    }
-
+    }  
+    
+    //trouve lecube qui bouge pas pour la rotation    
     get cubeCentral() {
         for (let index = 0; index < this.cubes.length; index++) {
             if (this.cubes[index].isCentre) {
@@ -54,151 +55,26 @@ class PieceBase {
     }
 
 
+    /**
+     * fait tourner la piece
+     */
     tourner() {
         //TODO voir fct SIN et COS
 
-        let centre = this.cubeCentral;
-
-
-        //trouve lecube qui bouge pas pour la rotation
+        let centre = this.cubeCentral;    
 
         if (centre != null) {
             for (let index = 0; index < this.cubes.length; index++) {
                 if (!this.cubes[index].isCentre) {
 
+                    //recup du decallage par rapport au centre
+                    let tmpx = this.cubes[index].x - centre.x;
+                    let tmpY = this.cubes[index].y - centre.y;
 
-                    /**
-                     * bloc pour les cube dont le coté touche le centre
-                    */
-                    //cube en haut => vas à droite
-                    if (this.cubes[index].x - centre.x === 0 && this.cubes[index].y - centre.y === 1) {
-
-
-
-                        this.cubes[index].x += 1;
-                        this.cubes[index].y -= 1;
-
-                        continue; //sinon risque de passer dans les autre if
-
-
-                    }
-                    //cube à droite =>vas en bas
-                    if (this.cubes[index].x - centre.x === 1 && this.cubes[index].y - centre.y === 0) {
-
-
-
-                        this.cubes[index].x -= 1;
-                        this.cubes[index].y -= 1;
-
-                        continue;
-
-                    }
-                    //cube en bas =>vas à gauche
-                    if (this.cubes[index].x - centre.x === 0 && this.cubes[index].y - centre.y === -1) {
-
-                        this.cubes[index].x -= 1;
-                        this.cubes[index].y += 1;
-
-                        continue;
-
-                    }
-                    //cube a gauche => vas en haut
-                    if (this.cubes[index].x - centre.x === -1 && this.cubes[index].y - centre.y === 0) {
-
-
-                        this.cubes[index].x += 1;
-                        this.cubes[index].y += 1;
-
-                        continue;
-                    }
-                    /**
-                     * 
-                     */
-
-                    /**
-                     * bloc pour les cube qui sont en diagonale du centre
-                     */
-                    //cube haut gauche => bas gauche
-                    if (this.cubes[index].x - centre.x === 1 && this.cubes[index].y - centre.y === 1) {
-
-
-                        this.cubes[index].y -= 2;
-
-                        continue;
-                    }
-                    //cube bas gauche => bas droite
-                    if (this.cubes[index].x - centre.x === 1 && this.cubes[index].y - centre.y === -1) {
-
-                        this.cubes[index].x -= 2;
-
-
-                        continue;
-                    }
-                    //cube bas droite => haut droite
-                    if (this.cubes[index].x - centre.x === -1 && this.cubes[index].y - centre.y === -1) {
-
-
-                        this.cubes[index].y += 2;
-
-                        continue;
-                    }
-                    //cube haut droite => haut gauche
-                    if (this.cubes[index].x - centre.x === -1 && this.cubes[index].y - centre.y === 1) {
-
-
-                        this.cubes[index].x += 2;
-
-                        continue;
-                    }
-
-                    /**
-                     * 
-                     */
-
-                    /**
-                     * bloc pour le special de la piece I
-                     */
-
-                    if (this.cubes[index].x - centre.x === 0 && this.cubes[index].y - centre.y === 2) {
-
-
-                        this.cubes[index].x += 2;
-                        this.cubes[index].y -= 2;
-
-                        continue;
-
-
-                    }
-                    //cube à droite =>vas en bas
-                    if (this.cubes[index].x - centre.x === 2 && this.cubes[index].y - centre.y === 0) {
-
-                        this.cubes[index].x -= 2;
-                        this.cubes[index].y -= 2;
-
-                        continue;
-
-                    }
-                    //cube en bas =>vas à gauche
-                    if (this.cubes[index].x - centre.x === 0 && this.cubes[index].y - centre.y === -2) {
-
-                        this.cubes[index].x -= 2;
-                        this.cubes[index].y += 2;
-
-                        continue;
-
-                    }
-                    //cube a gauche => vas en haut
-                    if (this.cubes[index].x - centre.x === -2 && this.cubes[index].y - centre.y === 0) {
-
-                        this.cubes[index].x += 2;
-                        this.cubes[index].y += 2;
-
-                        continue;
-                    }
-
-                    /**
-                     * 
-                     */
+                    // decalage x+1 = - decalage y
+                    // decalage y+1 = decalage x
+                    this.cubes[index].x = centre.x - tmpY;
+                    this.cubes[index].y = centre.y + tmpx;
                 }
             }
 
