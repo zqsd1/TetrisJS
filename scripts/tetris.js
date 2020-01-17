@@ -247,14 +247,14 @@ class Tetris extends Subject {
         }
         else {
             var piece = this.pieceSuivante;
-            piece.deplacer(Math.floor((this.nbCubeX - 1) / 2));
+            piece.deplacer(Math.floor((this.nbCubeX - 1) / 2)-1);//parce que piece suivante est decalé de 1
         }
         // test si on la place de la nouvelle piece est occupé
         if (this.testerDeplacement(piece)) {
 
             this.listeCubes.push(piece.cubes[0], piece.cubes[1], piece.cubes[2], piece.cubes[3]);
 
-            this.pieceSuivante = pieceFactory(0, 0);
+            this.pieceSuivante = pieceFactory(1, 0);//decalé pour la piramide qui sort du canvas
             this.notifyAllObservers("modif", this.listeCubes);
             this.notifyAllObservers("nvlPiece", this.pieceSuivante.cubes);
 
