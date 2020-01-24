@@ -13,7 +13,7 @@ requirejs.config({
 
 
 // Start the main app logic.
-requirejs(['utils', 'cubeClass', 'piecesClass', 'tetris', 'observer'],
+requirejs(['observer','utils', 'cubeClass', 'piecesClass', 'tetris'],
     function (cubeClass, tetris) {
 
         class obs extends Observer {
@@ -40,7 +40,8 @@ requirejs(['utils', 'cubeClass', 'piecesClass', 'tetris', 'observer'],
         var nbCubeX = config.nbCubeX;
         var nbCubeY = config.nbCubeY;
         var tempo = config.temporisation; //le temps entre chaque chute de piece
-        var isPlay = false;
+        var isPlay = false; 
+        var interval;
 
         var tetris = new Tetris(nbCubeX, nbCubeY);
 
@@ -57,7 +58,7 @@ requirejs(['utils', 'cubeClass', 'piecesClass', 'tetris', 'observer'],
         // btnStart.addEventListener('click',demarrer);
 
 
-        var interval;
+       
 
 
         function demarrer() {
@@ -66,12 +67,6 @@ requirejs(['utils', 'cubeClass', 'piecesClass', 'tetris', 'observer'],
                 isPlay = true;
                 interval = window.setInterval(game, tempo);
             }
-            // if (!tetris.isPlay) {
-            //     tetris.debuterPartie();
-            //     interval = window.setInterval(game, tempo);
-
-            // }
-
 
         }
         function game(params) {
