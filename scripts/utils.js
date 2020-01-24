@@ -1,47 +1,3 @@
-// /**
-//  * Design Pattern Observer
-//  */
-// class Subject{
-//     constructor() {
-//         this.observers = [];
-//     }
-
-//     subscribeObserver(observer) {
-//         this.observers.push(observer);
-//     }
-//     unsubscribeObserver(observer) {
-//         var index = this.observers.indexOf(observer);
-//         if (index > -1) {
-//             this.observers.splice(index, 1);
-//         }
-//     }
-//     notifyObserver(observer) {
-//         var index = this.observers.indexOf(observer);
-//         if (index > -1) {
-//             this.observers[index].notify();
-//         }
-//     }
-//     notifyAllObservers() {
-//         for (var i = 0; i < this.observers.length; i++) {
-//             this.observers[i].notify(i);
-//         }
-
-//     }
-// }
-
-
-// class Observer {
-
-//     constructor() {
-
-//     }
-//     notify(index) {
-//         console.log("Observer " + index + " is notified!");
-
-//     }
-// }
-
- 
 var config = {
     "nbCubeX": 10,
     "nbCubeY": 20,
@@ -244,38 +200,6 @@ var configPieces = {
  */
 function pieceFactory(x = 0, y = 0) {
     return new PieceBase(configPieces[getRandomIntInclusive(1, 7)],x,y);
-    //TODO voir reflection
-
-
-
-    let piece = getRandomIntInclusive(1, 7);
-    switch (piece) {
-        case 1:
-
-            // return new PieceBase([    
-            //     new Cube(configPieces[piece].cubes[0].x+x,configPieces[piece].cubes[0].y+y,configPieces[piece].couleur),
-            //     new Cube(configPieces[piece].cubes[1].x+x,configPieces[piece].cubes[1].y+y,configPieces[piece].couleur),
-            //     new Cube(configPieces[piece].cubes[2].x+x,configPieces[piece].cubes[2].y+y,configPieces[piece].couleur),
-            //     new Cube(configPieces[piece].cubes[3].x+x,configPieces[piece].cubes[3].y+y,configPieces[piece].couleur)]
-            //     );
-            return new PieceCarre(x, y);
-        case 2:
-            return new PieceZ(x, y);
-        case 3:
-            return new PieceS(x, y);
-        case 4:
-            return new PieceI(x, y);
-        case 5:
-            return new PieceL(x, y);
-        case 6:
-            return new PieceInvertL(x, y);
-        case 7:
-            return new PiecePyramide(x, y);
-
-        default:
-            break;
-
-    }
 
 
 }

@@ -11,23 +11,12 @@ class Tetris extends Subject {
         this.nbCubeX = nbCubeX;
         this.nbCubeY = nbCubeY;
 
-        this.listeCubes = [];//tableau qui contient tout les cube de la zone de jeu
 
-        this.isPlay = false;
+        this.listeCubes = [];//tableau qui contient tout les cube de la zone de jeu
         this.compteurLignesSuppr = 0;
         this.pieceSuivante = null;
 
     }
-
-    // get pieceSuivante() {
-    //     return this._pieceSuivante;
-    // }
-
-    // set pieceSuivante(value) {
-    //     this._pieceSuivante = value;
-    //     this.notifyAllObservers("nvlPiece");
-    // }
-
 
     /**
      * 
@@ -59,22 +48,17 @@ class Tetris extends Subject {
                 );
 
                 if (params === "ArrowLeft") {
-
                     pieceFantome.deplacer(-1);
                     if (this.testerDeplacement(pieceFantome)) {
                         pieceActive.deplacer(-1);
                     }
-
                 }
 
                 else if (params === "ArrowRight") {
-
                     pieceFantome.deplacer(1);
                     if (this.testerDeplacement(pieceFantome)) {
                         pieceActive.deplacer(1);
                     }
-
-
                 }
 
                 else if (params === "ArrowUp") {
@@ -82,7 +66,6 @@ class Tetris extends Subject {
                     if (this.testerDeplacement(pieceFantome)) {
                         pieceActive.tourner();
                     }
-
                 }
 
                 else if (params === "ArrowDown") {
@@ -97,33 +80,15 @@ class Tetris extends Subject {
 
                     //creer une nouvelle piece                   
                     else {
-                        //1 recup les numero Y
-
-
-
-                        //TODO y'a mieux a faire FILTER ?
 
                         let lignesCheck = [];
-                        // obtenir les numero y 
-                        pieceActive.cubes.forEach(cube => {
-                            if (!lignesCheck.includes(cube.y)) {
-                                lignesCheck.push(cube.y);
-                            }
-                        });
+                        lignesCheck = pieceActive.cubes
+                            .map(c => c.y)//recup les y de la piece 
+                            .filter((v, i, a) => a.indexOf(v) == i)// y uniques 
+                            .filter(v => this.testerLigneComplete(v)); // recup les ligne completes
 
-
-                        //verifie si la ligne est complete
-                        //enleve les element qui sont pas complet              
-                        for (let index = 0; index < lignesCheck.length; index++) {
-                            if (!this.testerLigneComplete(lignesCheck[index])) {
-                                lignesCheck.splice(index, 1);
-                                index--;//parce que splice decale le tab
-                            }
-                        }
 
                         //////
-
-
 
                         for (let index = 0; index < lignesCheck.length; index++) {
                             //enleve les ligne complete
@@ -138,18 +103,15 @@ class Tetris extends Subject {
                     }
                 }
 
-
-
             }
             else
                 this.creerPiece();
 
+            this.notifyAllObservers("modif", this.listeCubes);//TODO get /set pour listecube ?
+
         } catch (error) {
             console.log(error);
         }
-
-
-        this.notifyAllObservers("modif", this.listeCubes);
 
     }
 
@@ -169,7 +131,7 @@ class Tetris extends Subject {
                 return false;
             }
 
-
+            // verifie que la place est pas deja prise
             for (let j = 0; j < this.listeCubes.length - 4; j++) {
                 if (this.listeCubes[j].x === piece.cubes[i].x && this.listeCubes[j].y === piece.cubes[i].y) {
                     return false
@@ -216,7 +178,7 @@ class Tetris extends Subject {
 
         }
         this.compteurLignesSuppr++;
-        this.notifyAllObservers("ligne");
+        this.notifyAllObservers("ligne");//TODO get set compteur ?
     }
 
     /**
@@ -247,7 +209,7 @@ class Tetris extends Subject {
         }
         else {
             var piece = this.pieceSuivante;
-            piece.deplacer(Math.floor((this.nbCubeX - 1) / 2)-1);//parce que piece suivante est decalé de 1
+            piece.deplacer(Math.floor((this.nbCubeX - 1) / 2) - 1);//parce que piece suivante est decalé de 1
         }
         // test si on la place de la nouvelle piece est occupé
         if (this.testerDeplacement(piece)) {
@@ -273,15 +235,17 @@ class Tetris extends Subject {
     debuterPartie(params) {
 
         this.listeCubes = [];
-        this.isPlay = true;
+        this.compteurLignesSuppr = 0;
+        this.pieceSuivante = null;
+
 
     }
     finirPartie() {
-
-        this.isPlay = false;
         this.notifyAllObservers("fin");
-
     }
+
+
+
     notifyObserver(observer, param, tableau) {
         var index = this.observers.indexOf(observer);
         if (index > -1) {
