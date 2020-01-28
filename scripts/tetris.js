@@ -49,28 +49,28 @@ class Tetris extends Subject {
 
                 if (params === "ArrowLeft") {
                     pieceFantome.deplacer(-1);
-                    if (this.testerDeplacement(pieceFantome)) {
+                    if (this.testerDeplacement(pieceFantome, pieceActive.cubes)) {
                         pieceActive.deplacer(-1);
                     }
                 }
 
                 else if (params === "ArrowRight") {
                     pieceFantome.deplacer(1);
-                    if (this.testerDeplacement(pieceFantome)) {
+                    if (this.testerDeplacement(pieceFantome, pieceActive.cubes)) {
                         pieceActive.deplacer(1);
                     }
                 }
 
                 else if (params === "ArrowUp") {
                     pieceFantome.tourner();
-                    if (this.testerDeplacement(pieceFantome)) {
+                    if (this.testerDeplacement(pieceFantome, pieceActive.cubes)) {
                         pieceActive.tourner();
                     }
                 }
 
                 else if (params === "ArrowDown") {
                     pieceFantome.deplacer(0, 1);
-                    if (this.testerDeplacement(pieceFantome)) {
+                    if (this.testerDeplacement(pieceFantome, pieceActive.cubes)) {
                         pieceActive.deplacer(0, 1);
                     }
 
@@ -118,10 +118,23 @@ class Tetris extends Subject {
 
 
     /**
-     * test si on peut mettre une piece a cet emplacement
+     * test si on peut mettre une piece à cet emplacement
      * @param {PieceBase} piece 
+     * @param {Array} cubesExclus les cube a exclure du test 
      */
-    testerDeplacement(piece) {
+    testerDeplacement(piece, cubesExclus = []) {
+
+        //retire les cube non souhaité de la liste a tester
+        let liste = this.listeCubes.filter(function (cube) {
+            for (let index = 0; index < cubesExclus.length; index++) {
+                if (cube.x == cubesExclus[index].x && cube.y == cubesExclus[index].y) {
+                    return false;
+                }
+            }
+            return true;
+        });
+
+
 
         for (let i = 0; i < piece.cubes.length; i++) {
             //1 verifie que la piece sorte pas du jeux
@@ -132,8 +145,8 @@ class Tetris extends Subject {
             }
 
             // verifie que la place est pas deja prise
-            for (let j = 0; j < this.listeCubes.length - 4; j++) {
-                if (this.listeCubes[j].x === piece.cubes[i].x && this.listeCubes[j].y === piece.cubes[i].y) {
+            for (let j = 0; j < liste.length; j++) {
+                if (liste[j].x === piece.cubes[i].x && liste[j].y === piece.cubes[i].y) {
                     return false
                 }
 
