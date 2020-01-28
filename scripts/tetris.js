@@ -14,20 +14,24 @@ class Tetris extends Subject {
 
         this.listeCubes = [];//tableau qui contient tout les cube de la zone de jeu
         this.compteurLignesSuppr = 0;
-        this.pieceSuivante = null;
+        this._pieceSuivante = null;
 
     }
 
-    get compteurLigne()
-    {
+    get pieceSuivante() {
+        return this._pieceSuivante;
+    }
+    set pieceSuivante(value) {
+        this._pieceSuivante = value;
+        this.notifyAllObservers("nvlPiece", this._pieceSuivante.cubes);
+    }
+
+    get compteurLigne() {
         return this.compteurLignesSuppr;
     }
-
     set compteurLigne(value) {
-
         this.compteurLignesSuppr = value;
         this.notifyAllObservers("ligne");
-        return this.compteurLignesSuppr;
     }
 
     /**
@@ -202,7 +206,7 @@ class Tetris extends Subject {
 
 
         }
-        this.compteurLigne ++; //get set ....++ /+1 marche seulement si le get est avec le set
+        this.compteurLigne++; //get set ....++ /+1 marche seulement si le get est avec le set
 
     }
 
@@ -243,7 +247,7 @@ class Tetris extends Subject {
 
             this.pieceSuivante = pieceFactory(1, 0);//decalé pour la piramide qui sort du canvas
             this.notifyAllObservers("modif", this.listeCubes);
-            this.notifyAllObservers("nvlPiece", this.pieceSuivante.cubes);
+
 
 
         }
@@ -261,7 +265,7 @@ class Tetris extends Subject {
 
         this.listeCubes = [];
         this.compteurLignesSuppr = 0;
-        this.pieceSuivante = null;
+        this._pieceSuivante = null;
 
 
     }
