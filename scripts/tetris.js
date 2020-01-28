@@ -18,6 +18,18 @@ class Tetris extends Subject {
 
     }
 
+    get compteurLigne()
+    {
+        return this.compteurLignesSuppr;
+    }
+
+    set compteurLigne(value) {
+
+        this.compteurLignesSuppr = value;
+        this.notifyAllObservers("ligne");
+        return this.compteurLignesSuppr;
+    }
+
     /**
      * 
      * @param {string} params la direction 
@@ -190,8 +202,8 @@ class Tetris extends Subject {
 
 
         }
-        this.compteurLignesSuppr++;
-        this.notifyAllObservers("ligne");//TODO get set compteur ?
+        this.compteurLigne ++; //get set ....++ /+1 marche seulement si le get est avec le set
+
     }
 
     /**
